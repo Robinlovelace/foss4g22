@@ -82,5 +82,36 @@ Before describing the approach, some definitions are in order:
 
 - **Jittering**: The combined process of 'splitting' OD pairs representing many trips into multiple 'sub OD' pairs (disaggregation) and assigning origins and destinations to multiple unique points within each zone
 
+# Approach
+
+Jittering represents a comparatively simple --- compared with 'connector' based methods [@jafari_investigation_2015] --- approach is to OD data preprocessing.
+For each OD pair, the jittering approach consists of the following steps for each OD pair (provided it has required inputs of a disaggregation threshold, a single number greater than one, and sub-points from which origin and destination points are located):
+
+1. Checks if the number of trips (for a given 'disaggregation key', e.g. 'walking') is greater than the disaggregation threshold.
+2. If so, the OD pair is disaggregated. This means being divided into as many pieces ('sub-OD pairs') as is needed, with trip counts divided by the number of sub-OD pairs, for the total to be below the disaggregation threshold.
+3. For each sub-OD pair (or each original OD pair if no disaggregation took place) origin and destination locations are randomly sampled from sub-points which optionally have weights representing relative probability of trips starting and ending there.
+
+This approach has been implemented efficiently in the Rust crate `odjitter`, the source code of which can be found at https://github.com/dabreegster/odjitter.
+
+# Results
+
+We have found that jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
+We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond.
+Although useful for visualising the complex and spatially diffuse reality of travel patterns, we found that the most valuable use of jittering is as a pre-processing stage before routing and route network generation.
+Route networks generated from jittered desire lines are more diffuse, and potentially more realistic, that centroid-based desire lines.
+
+We also found that the approach, implemented in Rust and with bindings to R and Python (in progress), is fast.
+Benchmarks show that the approach can 'jitter' desire lines representing millions of trips in a major city in less than a minute on consumer hardware.
+
+We also found that the results of jittering depend on the geographic input datasets representing start points and trip attractors, and the use of weights.
+This highlights the importance of exploring the parameter space for optimal jittered desire line creation.
+
+# Next steps
+
+We plan to create/improve R/Python interfaces to the `odjitter` and enable others to benefit from it.
+<!-- Although an R interface to the `odjitter` crate has already been developed, it uses system calls, not bindings provided by the R package `rextendr`. -->
+We plan to improve the package's documentation and to test its results, supporting reproducible sustainable transport research worldwide.
+
+
 
 # References
