@@ -1,16 +1,18 @@
 ---
-# output: github_document
-# title: "Jittering: a flexible approach for converting OD data into geographic desire lines, routes and route networks for transport planning"
+output: github_document
+title: "Jittering: a flexible approach for converting OD data into geographic desire lines, routes and route networks for transport planning"
 bibliography: foss4g2022.bib
-# author: Robin Lovelace, Rosa Félix, Dustin Carlino
-output:
-  bookdown::pdf_document2:
-    template: ISPRStemplate.tex
+author: Robin Lovelace, Rosa Félix, Dustin Carlino
+# output:
+#   bookdown::pdf_document2:
+#     template: ISPRStemplate.tex
 ---
 
 ```{r, eval=FALSE, echo=FALSE}
 unzip("ISPRSguidelines_authors_fullpaper_latex_2021_09_09.zip")
 tinytex::pdflatex("ISPRSguidelines_authors_fullpaper.tex")
+rmarkdown::render("README.Rmd")
+browseURL("README.pdf")
 ```
 
 
