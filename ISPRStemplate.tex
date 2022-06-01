@@ -1,0 +1,335 @@
+% Version 2020-12-15
+% update – 161114 by Ken Arroyo Ohori: made spacing closer to Word template throughout, put proper quotes everywhere, removed spacing that could cause labels to be wrong, added non-breaking and inter-sentence spacing where applicable, removed explicit newlines
+% update – 010819 by Dennis Wittich: made spacing and font size closer to Word template, updated references and refernces style
+% update – 042319 by Dennis Wittich: font size of captions set to 'small', first author names are shortened, hyphenation fixed
+% update – 010620 by Dennis Wittich: Footnotes alignment set to left
+% update - 151220 by Clement Mallet: Template adapted for double blind full paper submissions
+% update - 060321 by Christian Heipke: Template refined for double blind full paper submissions
+% update - 090921 by Christian Heipke: Template refined for double blind full paper submissions
+
+\documentclass{isprs} % isprs class modified 23-04-2019 (Dennis Wittich)
+\usepackage{subfigure}
+\usepackage{setspace}
+\usepackage{geometry} % added 27-02-2014 Markus Englich
+\usepackage{epstopdf}
+\usepackage[labelsep=period]{caption}  % added 14-04-2016 Markus Englich - Recommendation by Sebastian Brocks
+\usepackage[british]{babel} 
+\usepackage[hang]{footmisc}
+\usepackage{hyperref}
+\def\footnotemargin{1em} % added 08-01-2020 Dennis Wittich
+
+%\usepackage[authoryear]{natbib}
+%\def\bibhang{0pt}
+
+\geometry{a4paper, top=25mm, left=20mm, right=20mm, bottom=25mm, headsep=10mm, footskip=12mm} % added 27-02-2014 Markus Englich
+%\usepackage{enumitem}
+
+%\usepackage{isprs}
+%\usepackage[perpage,para,symbol*]{footmisc}
+
+%\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+\captionsetup{justification=centering,font=normal} % thanks to Niclas Borlin 05-05-2016
+\captionsetup[figure]{font=small} % added 23-04-2019 Dennis Wittich
+\captionsetup[table]{font=small} % added 23-04-2019 Dennis Wittich
+
+% For RMD compat
+$if(pagestyle)$
+\pagestyle{$pagestyle$}
+$endif$
+$if(csl-refs)$
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+$endif$
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% https://stackoverflow.com/questions/41052687/rstudio-pdf-knit-fails-with-environment-shaded-undefined-error
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+
+\begin{document}
+
+\title{GUIDELINES FOR AUTHORS PREPARING A FULL PAPER TO BE SUBMITTED TO ISPRS EVENTS}
+\date{}
+
+
+% KAO: Remove extra spacing
+% Anonymous submissions, authors' names should not be visible
+\author{***** (for review, names must be rendered anonymous)}
+
+% KAO: Remove extra newline
+% Anonymous submissions, authors' affiliations should not be visible
+\address{**** (for review, affiliations must be rendered anonymous)}
+
+% If the corresponding author is NOT the final author, always add a % space before the subsequent comma, i.e.
+% first author name\textsuperscript{a,}\thanks{Corresponding author} , % second author name \textsuperscript{b}, etc.
+% thanks to Niclas Borlin 05-05-2016
+
+
+\commission{XX, }{YY} %This field is optional. If filled, XX and YY should be replaced by adequate numbers. See https://www2.isprs.org/commissions/
+\workinggroup{XX/YY} %This field is optional.
+\icwg{}   %This field is optional.
+
+% KAO: Use times symbol
+\abstract{
+These guidelines are provided for preparation of \textbf{full papers} submitted to ISPRS events (Congress, Geospatial Week, Symposia, smaller events). If the double-blind review process leads to acceptance, they will be either published in the series of Volumes of The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences or of The ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences.  
+}
+
+\keywords{Manuscripts, Proceedings, ISPRS Archives, ISPRS Annals, Guidelines for Authors, Styleguide.}
+
+\maketitle
+
+%\saythanks % added 28-02-2014 Markus Englich
+
+\section{MANUSCRIPT}\label{MANUSCRIPT}
+ 
+% KAO: Sloppy spacing ensures non-overfull lines. Can be removed if this is not an issue.
+\sloppy
+
+\subsection{General Instructions}\label{sec:General Instructions}
+
+The paper should have the following structure: 
+
+%\itemize
+\begin{enumerate}
+\setlength\itemsep{0em}\setlength\parskip{0em}\setlength\topsep{0em}\setlength\partopsep{0em}\setlength\parsep{0em} 
+\item{Title of the paper} 
+\item{Authors and affiliation, rendered \textbf{anonymous} }
+\item{Keywords (6--8 words)}
+\item{Abstract (100--250 words)}
+\item{Introduction}
+\item{Main body}
+\item{Conclusions}
+\item{Acknowledgements, rendered \textbf{anonymous}}
+\item{References}
+\item{Appendix (if applicable)}
+\end{enumerate}
+
+% KAO: Use proper quotes
+Full papers \textbf{submitted for double-blind review} must not contain any information which makes it possible to identify the authors. In particular, names and affiliations must be removed from the manuscript submitted for review. Also sentences such as ''As we have shown in previous work (Author\_x, 20xx)'' are to be avoided. Instead use a formulation such as ''Author\_x (20xx) has shown ...''. Note that submissions which have not been appropriately anonymised may be subject to immediate rejection.\\
+In case, the contribution has been accepted for publication, a camera-ready manuscript must be submitted at the due date. In this camera-ready manuscript the name(s) and affiliation(s) of the authors(s) must be identified, and acknowledgements can be personalized.
+% In Section~\ref{MANUSCRIPT} we present related work
+%\newpage            
+\subsection{Page Layout, Spacing and Margins}\label{sec:Page Layout, Spacing and Margins}
+
+The paper must be compiled in one column for the Title and Abstract and in two columns for all subsequent text. All text should be single-spaced, unless otherwise stated. Left and right justified typing is preferred.
+
+
+\subsection{Preparation in electronic form}\label{sec:Preparation in electronic form}
+
+% KAO: Remove newline
+To assist authors in preparing their contributions, styleguides are 
+provided in Word and/or LaTeX on the ISPRS web Page, see: http://www.isprs.org/documents/orangebook/app5.aspx.
+
+
+
+\subsection{Length and Font}\label{sec:Length and Font}
+
+All manuscripts, except Invited Papers are limited to a length of approximately eight (8) single-spaced pages (A4 size), including abstracts, figures, tables and references. ISPRS Invited Papers are limited to approximately twelve (12) pages. In any case, the minimum length is six (6) pages. The font type Times New Roman with a size of nine (9) points is to be used.
+
+% KAO: Removed spacing before label: can cause references to be wrong
+\begin{table}[h]
+	\centering
+		\begin{tabular}{|l|c|c|}\hline
+			Setting&\multicolumn{2}{c|}{A4 size page}\\\hline
+			  &mm&inches\\
+			 Top&25&1.0\\
+			 Bottom&25&1.0\\
+			 Left&20&0.8\\
+			 Right&20&0.8\\
+			 Column Width&82&3.2\\
+			 Column Spacing&6&0.25\\\hline
+		\end{tabular}
+	\caption{Margin settings for A4 size page.}
+\label{tab:Margin_settings}
+\end{table}
+
+\section{TITLE AND ABSTRACT BLOCK}\label{sec:TITLE AND ABSTRACT BLOCK}
+
+\subsection{Title}\label{sec:Title}
+
+The title should appear centred in bold capital letters, at the top of the first page of the paper with a size of twelve (12) points and single-spacing. Author(s) name(s), affiliation and mailing address should be masked. They will only appear in the final version if the paper is accepted either in the ISPRS Annals or Archives.
+
+\subsection{ISPRS Affiliation (optional)}\label{sec:ISPRS Affiliation (optional)}
+
+% KAO: Use proper quotes
+For those authors affiliated with a specific Commission and/or Working Group of ISPRS, a separate title may be entered. The title should be centred in bold type after one blank line below the author’s affiliation, i.e. Commission~\#, Working Group~\#. The Commission number shall be Roman and the Working Group number should be the Commission Roman number, slash, WG Arabic number (see example above).
+
+
+\subsection{Key Words}\label{sec:Key Words}
+
+% KAO: Use proper quotes and dash
+Leave two lines blank, then type \textbf{``KEY WORDS:''}
+in bold capital letters, followed by 5--8 key words. Note that ISPRS does not provide a set 
+list of key words any longer. Therefore, include those key words which you would 
+use to find a paper with content you are preparing.
+
+
+\subsection{Abstract}\label{sec:Abstract}
+
+% KAO: Use proper quotes and dash
+Leave two blank lines under the key words. Type \textbf{``ABSTRACT:''}
+flush left in bold Capitals followed by one blank line. Start now
+with a concise Abstract (100--250 words) which presents briefly the
+content and very importantly, the news and results of the paper in
+words understandable also to non-specialists. 
+
+
+\section{MAIN BODY OF TEXT}\label{sec:MAIN BODY OF TEXT}
+
+Type text single-spaced, \textbf{with} one blank line between paragraphs and 
+following headings. Start paragraphs flush with left margin.
+
+$body$
+
+\subsection{Headings}\label{sec:Headings}
+
+% KAO: Remove explicit newlines in this section
+Major headings are to be centred, in bold capitals without 
+underlining, after two blank lines and followed by a one blank line.
+
+Type subheadings flush with the left margin in bold upper case and lower 
+case letters. Subheadings are on a separate line between two single blank lines.
+
+Subsubheadings are to be typed in bold upper case and lower case letters 
+after one blank line flush with the left margin of the page, with text 
+following on the same line. Subsubheadings may be followed by a period 
+or colon, they may also be the first word of the paragraph's sentence.
+
+Use decimal numbering for headings and subheadings.
+
+
+\subsection{Footnotes}\label{sec:Footnotes}
+
+Mark footnotes in the text with a number (1); use consecutive numbers for following footnotes. Place footnotes at the bottom of the page, separated from the text above it by a horizontal line.
+
+
+\subsection{Illustrations and Tables}\label{sec:Illustrations and Tables}
+
+\subsubsection{Placement:}\label{sec:Placement}
+
+Figures must be placed in the appropriate location in the document, 
+as close as practicable to the reference of the figure in the text. 
+While figures and tables are usually aligned horizontally on the page, 
+large figures and tables sometimes need to be turned on their sides. 
+If you must turn a figure or table sideways, please be sure that the 
+top is always on the left-hand side of the page.
+
+
+\subsubsection{Captions:}\label{sec:Captions}
+
+All captions should be typed in upper and lower case letters, 
+centred directly beneath the illustration. Use single spacing if they 
+use more than one line. All captions are to be numbered consecutively, 
+e.g. Figure~1, Figure~2, Figure~3, ..  and Table~1, Table~2, Table~3, ...
+
+% KAO: Remove spacing before label: can cause reference to be wrong
+\begin{figure}[ht!]
+\begin{center}
+		\includegraphics[width=1.0\columnwidth]{figures/test_sites/fig1.eps}
+	\caption{Figure placement and numbering.}
+\label{fig:figure_placement}
+\end{center}
+\end{figure}
+
+
+\subsubsection{Copyright:}\label{sec:Copyright}
+
+% KAO: Inter-sentence spacing
+If your article contains any copyrighted illustrations or imagery, 
+please include a statement of copyright such as: \copyright~SPOT Image Copyright 20xx 
+(fill in year), CNES\@. It is the author's responsibility to obtain any necessary 
+copyright permission. After publication, your article is distributed under \underline{the Creative 
+Commons Unported License} and you retain the copyright.
+
+
+\subsection{Equations, Symbols and Units}\label{sec:Equations, Symbols and Units}
+
+\subsubsection{Equations:}\label{sec:Equations}
+
+Equations should be numbered consecutively throughout the contribution. The equation 
+number is enclosed in parentheses and placed flush right. Leave one blank lines 
+before and after equations: 
+
+
+\begin{equation}\label{equ:1}
+	x = x_0 -c \frac{X - X_0}{Z - Z_0}; y = y_0 -c \frac{Y - Y_0}{Z - Z_0},
+\end{equation}
+
+
+\subsubsection{Symbols and Units:}\label{sec:Symbols and Units}
+Use the SI (Syst\`{e}me International) Units and Symbols. Unusual characters 
+or symbols should be explained in a list of nomenclature.
+
+% KAO: Non-breaking space
+\subsection{References}\label{sec:References}
+References should be cited in the text, thus~\cite{smith1987rep}, and listed in alphabetical order in the reference section. The following arrangements should be used:
+
+% KAO: Use proper quotes and non-breaking space
+\subsubsection{References from Journals:} 
+Journals should be cited like~\cite{smith1987} or~\cite{michalis2008}. Names of journals can be abbreviated according to the ``International List of Periodical Title Word Abbreviations''. In case of doubt, write names in full.
+
+\subsubsection{References from Books:} 
+Books should be cited like~\cite{foerstner2016}.
+
+\subsubsection{References from other Literature:}
+Other literature should be cited like~\cite{smith1987rep} and~\cite{smith2000}.
+
+\subsubsection{References from Websites:}
+References from the internet should be cited like~\cite{chan2017} and~\cite{maas2017}. Use ofpersistent identifiers such as the Digital Object Identifier (DOI) rather than URLs is strongly advised. In this case last date of visiting the website can be omitted, as the identifier will not change.
+
+\subsubsection{References from Research Data:}
+References from research data should be cited like~\cite{dubayah2013}.
+
+\subsubsection{References from Software Projects:}
+References to a software project as a high level container including multiple versions of the software should be cited like~\cite{grass2017}.
+
+\subsubsection{References from Software Versions:}
+References to a specific software version should be cited like~\cite{grass2015}.
+
+\subsubsection{References from Software Project Add-ons:}
+References to a specific software add-on to a software project should be cited like~\cite{lennert2017}.
+
+\subsubsection{References from Software Repository:}
+References from software repositories should be cited like~\cite{gago2016}.
+
+\section*{ACKNOWLEDGEMENTS (Optional)}\label{ACKNOWLEDGEMENTS}
+Acknowledgements of support for the project/paper/author are welcome if they do not violate the anonymity of the submitted paper. Otherwise, they should be masked. 
+
+{
+	\begin{spacing}{1.17}
+		\normalsize
+		\bibliography{ISPRSguidelines_authors} % Include your own bibliography (*.bib), style is given in isprs.cls
+	\end{spacing}
+}
+
+
+\section*{APPENDIX (Optional)}\label{APPENDIX}
+
+Any additional supporting data may be appended, provided the paper does not exceed the limits given above. 
+
+
+\end{document}

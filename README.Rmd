@@ -1,0 +1,86 @@
+---
+# output: github_document
+# title: "Jittering: a flexible approach for converting OD data into geographic desire lines, routes and route networks for transport planning"
+bibliography: foss4g2022.bib
+# author: Robin Lovelace, Rosa Félix, Dustin Carlino
+output:
+  bookdown::pdf_document2:
+    template: ISPRStemplate.tex
+---
+
+```{r, eval=FALSE, echo=FALSE}
+unzip("ISPRSguidelines_authors_fullpaper_latex_2021_09_09.zip")
+tinytex::pdflatex("ISPRSguidelines_authors_fullpaper.tex")
+```
+
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = FALSE,
+  message = FALSE,
+  cache = TRUE,
+  warning = FALSE,
+  fig.align = "center",
+  eval = FALSE
+)
+```
+
+```{r, include=FALSE}
+# devtools::install_github("itsleeds/od")
+library(sf)
+library(tmap)
+library(dplyr)
+library(stplanr)
+rbbt::bbt_update_bib(path_rmd = "foss4g2022.Rmd", path_bib = "foss4g2022.bib")
+```
+
+# Introduction
+
+
+Origin-destination (OD) datasets provide information on aggregate travel patterns between zones and geographic entities.
+OD datasets are 'implicitly geographic', containing identification codes of the geographic objects from which trips start and end.
+A common approach to converting OD datasets to geographic entities, for example represented using the simple features standard [@ogcopengeospatialconsortiuminc_opengis_2011] and saved in file formats such as GeoPackage and GeoJSON, is to represent each OD record as a straight line between zone centroids.
+This approach to representing OD datasets on the map has been since at least the 1950s [@boyce_forecasting_2015] and is still in use today [e.g. @rae_spatial_2009].
+
+Beyond simply visualising aggregate travel patterns, centroid-based geographic desire lines are also used as the basis of many transport modelling processes.
+The following steps can be used to convert OD datasets into route networks, in a process that can generate nationally scalable results [@morgan_travel_2020]:
+
+- OD data converted into centroid-based geographic desire lines
+
+- Calculation of routes for each desire line, with start and end points at zone centroids
+
+- Aggregation of routes into route networks, with values on each segment representing the total amount of travel ('flow') on that part of the network, using functions such as `overline()` in the open source R package `stplanr` [@lovelace_stplanr_2018]
+
+This approach is tried and tested.
+The OD -> desire line -> route -> route network processing pipeline forms the basis of the route network results in the Propensity to Cycle Tool, an open source and publicly available map-based web application for informing strategic cycle network investment, 'visioning' and prioritisation [@lovelace_propensity_2017; @goodman_scenarios_2019].
+However, the approach has some key limitations:
+
+- Flows are concentrated on transport network segments leading to zone centroids, creating distortions in the results and preventing the simulation of the diffuse networks that are particularly important for walking and cycling
+
+- The results are highly dependent on the size and shape of geographic zones used to define OD data
+
+- The approach is inflexible, providing few options to people who want to use valuable OD datasets in different ways
+
+To overcome these limitations we developed a 'jittering' approach to conversion of OD datasets to desire lines that randomly samples points within each zone [@lovelace_jittering_UnderReview].
+While that paper discussed the conceptual development of the approach, it omitted key details on its implementation in open source software.
+
+In this paper we outline the implementation of jittering and demonstrate how a single Rust crate can provide the basis of implementations in other languages.
+Furthermore, we demonstrate how jittering can be used to create more diffuse and accurate estimates of movement at the level of segments ('flows') on transport network, in reproducible code-driven workflows and with minimal computational overheads compared with the computationally intensive process of route calculation ('routing') or processing large GPS datasets.
+The overall aim is to describe the jittering approach in technical terms and its implementation in open source software.
+
+Before describing the approach, some definitions are in order:
+
+- **Origins**: locations of trip departure, typically stored as ID codes linking to zones
+
+- **Destinations**: trip destinations, also stored as ID codes linking to zones
+
+- **Attributes**: the number of trips made between each 'OD pair' and additional attributes such as route distance between each OD pair
+
+- **Jittering**: The combined process of 'splitting' OD pairs representing many trips into multiple 'sub OD' pairs (disaggregation) and assigning origins and destinations to multiple unique points within each zone
+
+
+# References
