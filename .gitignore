@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+ISPRSguidelines_authors*
+*cache*
+*.pdf
+*.log
+*.gz
