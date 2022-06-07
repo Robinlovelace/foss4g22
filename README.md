@@ -56,9 +56,9 @@ limitations:
 
 To overcome these limitations we developed a ‘jittering’ approach to
 conversion of OD datasets to desire lines that randomly samples points
-within each zone (Lovelace, Félix, and Carlino Under Review). While that
-paper discussed the conceptual development of the approach, it omitted
-key details on its implementation in open source software.
+within each zone (Lovelace, Félix, and Carlino 2022). While that paper
+discussed the conceptual development of the approach, it omitted key
+details on its implementation in open source software.
 
 In this paper we outline the implementation of jittering and demonstrate
 how a single Rust crate can provide the basis of implementations in
@@ -117,12 +117,18 @@ We have found that jittering leads to more spatially diffuse
 representations of OD datasets than the common approach to desire lines
 that go from and to zone centroids. We have used the approach to add
 value to numerous OD datasets for projects based in Ireland, Norway,
-Portugal, New Zealand and beyond. Although useful for visualising the
-complex and spatially diffuse reality of travel patterns, we found that
-the most valuable use of jittering is as a pre-processing stage before
-routing and route network generation. Route networks generated from
-jittered desire lines are more diffuse, and potentially more realistic,
-that centroid-based desire lines.
+Portugal, New Zealand and beyond. For instance, Fig. shows the
+difference between desire lines with centroids approach and the
+jittering approach.
+
+<img src="README_files/figure-gfm/jitteredoverview-1.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" width="50%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/jitteredoverview-2.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" width="50%" style="display: block; margin: auto;" />
+
+Although useful for visualising the complex and spatially diffuse
+reality of travel patterns, we found that the most valuable use of
+jittering is as a pre-processing stage before routing and route network
+generation. Route networks generated from jittered desire lines are more
+diffuse, and potentially more realistic, that centroid-based desire
+lines.
 
 We also found that the approach, implemented in Rust and with bindings
 to R and Python (in progress), is fast. Benchmarks show that the
@@ -182,11 +188,12 @@ Transport Planning.” *The R Journal* 10 (2): 7–23.
 
 </div>
 
-<div id="ref-lovelace_jittering_UnderReview" class="csl-entry">
+<div id="ref-Lovelace2022Jittering" class="csl-entry">
 
-Lovelace, Robin, Rosa Félix, and Dustin Carlino. Under Review.
-“Jittering: A Computationally Efficient Method for Generating Realistic
-Route Networks from Origin-Destination Data.” *TBC*, Under Review.
+Lovelace, Robin, Rosa Félix, and Dustin Carlino. 2022. “Jittering: A
+Computationally Efficient Method for Generating Realistic Route Networks
+from Origin-Destination Data.” *Findings*, April.
+<https://doi.org/10.32866/001c.33873>.
 
 </div>
 

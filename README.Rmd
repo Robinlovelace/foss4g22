@@ -6,6 +6,9 @@ author: Robin Lovelace, Rosa Félix, Dustin Carlino
 # output:
 #   bookdown::pdf_document2:
 #     template: ISPRStemplate.tex
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r, eval=FALSE, echo=FALSE}
@@ -14,7 +17,6 @@ tinytex::pdflatex("ISPRSguidelines_authors_fullpaper.tex")
 rmarkdown::render("README.Rmd")
 browseURL("README.pdf")
 ```
-
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -26,8 +28,8 @@ knitr::opts_chunk$set(
   message = FALSE,
   cache = TRUE,
   warning = FALSE,
-  fig.align = "center",
-  eval = FALSE
+  fig.align = "center"
+  # eval = FALSE
 )
 ```
 
@@ -37,11 +39,10 @@ library(sf)
 library(tmap)
 library(dplyr)
 library(stplanr)
-rbbt::bbt_update_bib(path_rmd = "foss4g2022.Rmd", path_bib = "foss4g2022.bib")
+# rbbt::bbt_update_bib(path_rmd = "README.Rmd", path_bib = "foss4g2022.bib")
 ```
 
 # Introduction
-
 
 Origin-destination (OD) datasets provide information on aggregate travel patterns between zones and geographic entities.
 OD datasets are 'implicitly geographic', containing identification codes of the geographic objects from which trips start and end.
@@ -51,23 +52,23 @@ This approach to representing OD datasets on the map has been since at least the
 Beyond simply visualising aggregate travel patterns, centroid-based geographic desire lines are also used as the basis of many transport modelling processes.
 The following steps can be used to convert OD datasets into route networks, in a process that can generate nationally scalable results [@morgan_travel_2020]:
 
-- OD data converted into centroid-based geographic desire lines
+-   OD data converted into centroid-based geographic desire lines
 
-- Calculation of routes for each desire line, with start and end points at zone centroids
+-   Calculation of routes for each desire line, with start and end points at zone centroids
 
-- Aggregation of routes into route networks, with values on each segment representing the total amount of travel ('flow') on that part of the network, using functions such as `overline()` in the open source R package `stplanr` [@lovelace_stplanr_2018]
+-   Aggregation of routes into route networks, with values on each segment representing the total amount of travel ('flow') on that part of the network, using functions such as `overline()` in the open source R package `stplanr` [@lovelace_stplanr_2018]
 
 This approach is tried and tested.
 The OD -> desire line -> route -> route network processing pipeline forms the basis of the route network results in the Propensity to Cycle Tool, an open source and publicly available map-based web application for informing strategic cycle network investment, 'visioning' and prioritisation [@lovelace_propensity_2017; @goodman_scenarios_2019].
 However, the approach has some key limitations:
 
-- Flows are concentrated on transport network segments leading to zone centroids, creating distortions in the results and preventing the simulation of the diffuse networks that are particularly important for walking and cycling
+-   Flows are concentrated on transport network segments leading to zone centroids, creating distortions in the results and preventing the simulation of the diffuse networks that are particularly important for walking and cycling
 
-- The results are highly dependent on the size and shape of geographic zones used to define OD data
+-   The results are highly dependent on the size and shape of geographic zones used to define OD data
 
-- The approach is inflexible, providing few options to people who want to use valuable OD datasets in different ways
+-   The approach is inflexible, providing few options to people who want to use valuable OD datasets in different ways
 
-To overcome these limitations we developed a 'jittering' approach to conversion of OD datasets to desire lines that randomly samples points within each zone [@lovelace_jittering_UnderReview].
+To overcome these limitations we developed a 'jittering' approach to conversion of OD datasets to desire lines that randomly samples points within each zone [@Lovelace2022Jittering].
 While that paper discussed the conceptual development of the approach, it omitted key details on its implementation in open source software.
 
 In this paper we outline the implementation of jittering and demonstrate how a single Rust crate can provide the basis of implementations in other languages.
@@ -76,29 +77,60 @@ The overall aim is to describe the jittering approach in technical terms and its
 
 Before describing the approach, some definitions are in order:
 
-- **Origins**: locations of trip departure, typically stored as ID codes linking to zones
+-   **Origins**: locations of trip departure, typically stored as ID codes linking to zones
 
-- **Destinations**: trip destinations, also stored as ID codes linking to zones
+-   **Destinations**: trip destinations, also stored as ID codes linking to zones
 
-- **Attributes**: the number of trips made between each 'OD pair' and additional attributes such as route distance between each OD pair
+-   **Attributes**: the number of trips made between each 'OD pair' and additional attributes such as route distance between each OD pair
 
-- **Jittering**: The combined process of 'splitting' OD pairs representing many trips into multiple 'sub OD' pairs (disaggregation) and assigning origins and destinations to multiple unique points within each zone
+-   **Jittering**: The combined process of 'splitting' OD pairs representing many trips into multiple 'sub OD' pairs (disaggregation) and assigning origins and destinations to multiple unique points within each zone
 
 # Approach
 
 Jittering represents a comparatively simple --- compared with 'connector' based methods [@jafari_investigation_2015] --- approach is to OD data preprocessing.
 For each OD pair, the jittering approach consists of the following steps for each OD pair (provided it has required inputs of a disaggregation threshold, a single number greater than one, and sub-points from which origin and destination points are located):
 
-1. Checks if the number of trips (for a given 'disaggregation key', e.g. 'walking') is greater than the disaggregation threshold.
-2. If so, the OD pair is disaggregated. This means being divided into as many pieces ('sub-OD pairs') as is needed, with trip counts divided by the number of sub-OD pairs, for the total to be below the disaggregation threshold.
-3. For each sub-OD pair (or each original OD pair if no disaggregation took place) origin and destination locations are randomly sampled from sub-points which optionally have weights representing relative probability of trips starting and ending there.
+1.  Checks if the number of trips (for a given 'disaggregation key', e.g. 'walking') is greater than the disaggregation threshold.
+2.  If so, the OD pair is disaggregated. This means being divided into as many pieces ('sub-OD pairs') as is needed, with trip counts divided by the number of sub-OD pairs, for the total to be below the disaggregation threshold.
+3.  For each sub-OD pair (or each original OD pair if no disaggregation took place) origin and destination locations are randomly sampled from sub-points which optionally have weights representing relative probability of trips starting and ending there.
 
-This approach has been implemented efficiently in the Rust crate `odjitter`, the source code of which can be found at https://github.com/dabreegster/odjitter.
+This approach has been implemented efficiently in the Rust crate `odjitter`, the source code of which can be found at <https://github.com/dabreegster/odjitter>.
 
 # Results
 
 We have found that jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
-We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond.
+We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond. For instance, Fig. \ref{poltlisbon} shows the difference between desire lines with centroids approach and the jittering approach. 
+
+```{r include=FALSE, cache=TRUE}
+od_all = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/TRIPSmode_freguesias.Rds"))
+zones = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/FREGUESIASgeo.Rds"))
+osm_data_region = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/osm_data_region.Rds"))
+
+```
+```{r include=FALSE, cache=TRUE}
+## For Lisbon only 
+lisbon_zones = zones %>% filter(Concelho == "Lisboa")
+od_lisbon = od_all %>% 
+  filter(DICOFREor11 %in% lisbon_zones$Dicofre & DICOFREde11 %in% lisbon_zones$Dicofre)
+
+od_lisbon_sf = od::od_to_sf(od_lisbon, lisbon_zones) #desire lines
+
+set.seed(42)
+od_lisbon_jittered = odjitter::jitter(  #jitter
+  od = od_lisbon,
+  zones = lisbon_zones,
+  subpoints = osm_data_region,
+  disaggregation_key = "Total",
+  disaggregation_threshold = 100 ##30? 50? 100?
+)
+nrow(od_lisbon_jittered) # 9042 (17784 with 100 disagreg_thr)
+
+```
+```{r jitteredoverview, echo=FALSE, fig.cap="\\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)", fig.show='hold', fig.ncol=2, out.width="50%"}
+plot(od_lisbon_sf$geometry, lwd = 0.2)
+plot(od_lisbon_jittered$geometry, lwd = 0.1)
+```
+
 Although useful for visualising the complex and spatially diffuse reality of travel patterns, we found that the most valuable use of jittering is as a pre-processing stage before routing and route network generation.
 Route networks generated from jittered desire lines are more diffuse, and potentially more realistic, that centroid-based desire lines.
 
@@ -111,9 +143,6 @@ This highlights the importance of exploring the parameter space for optimal jitt
 # Next steps
 
 We plan to create/improve R/Python interfaces to the `odjitter` and enable others to benefit from it.
-<!-- Although an R interface to the `odjitter` crate has already been developed, it uses system calls, not bindings provided by the R package `rextendr`. -->
-We plan to improve the package's documentation and to test its results, supporting reproducible sustainable transport research worldwide.
-
-
+<!-- Although an R interface to the `odjitter` crate has already been developed, it uses system calls, not bindings provided by the R package `rextendr`. --> We plan to improve the package's documentation and to test its results, supporting reproducible sustainable transport research worldwide.
 
 # References
