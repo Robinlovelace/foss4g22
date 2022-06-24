@@ -1,11 +1,11 @@
 ---
-output: github_document
 title: "Jittering: a flexible approach for converting OD data into geographic desire lines, routes and route networks for transport planning"
 bibliography: foss4g2022.bib
 author: Robin Lovelace, Rosa Félix, Dustin Carlino
-# output:
-#   bookdown::pdf_document2:
-#     template: ISPRStemplate.tex
+# output: github_document
+output:
+  bookdown::pdf_document2:
+    template: ISPRStemplate.tex
 editor_options: 
   markdown: 
     wrap: sentence
@@ -98,10 +98,11 @@ This approach has been implemented efficiently in the Rust crate `odjitter`, the
 
 # Results
 
-We have found that jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
-We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond. For instance, Fig. \ref{poltlisbon} shows the difference between desire lines with centroids approach and the jittering approach. 
+Jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
+We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond.
+Figure \@ref(fig:lisbon1) shows the difference between desire lines with centroids approach and the jittering approach. 
 
-```{r include=FALSE, cache=TRUE}
+```{r lisbon1, include=FALSE, cache=TRUE, fig.cap="Illustration of jittered (left) compared with unjittered (right) origin-destination data".}
 od_all = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/TRIPSmode_freguesias.Rds"))
 zones = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/FREGUESIASgeo.Rds"))
 osm_data_region = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/osm_data_region.Rds"))
