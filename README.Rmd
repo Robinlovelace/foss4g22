@@ -102,12 +102,13 @@ Jittering leads to more spatially diffuse representations of OD datasets than th
 We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond.
 Figure \@ref(fig:lisbon1) shows the difference between desire lines with centroids approach and the jittering approach. 
 
-```{r lisbon1, include=FALSE, cache=TRUE, fig.cap="Illustration of jittered (left) compared with unjittered (right) origin-destination data".}
+```{r lisbon1, include=FALSE, cache=TRUE, fig.cap="Illustration of jittered (left) compared with unjittered (right) origin-destination data."}
 od_all = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/TRIPSmode_freguesias.Rds"))
 zones = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/FREGUESIASgeo.Rds"))
 osm_data_region = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/osm_data_region.Rds"))
-
 ```
+
+
 ```{r include=FALSE, cache=TRUE}
 ## For Lisbon only 
 lisbon_zones = zones %>% filter(Concelho == "Lisboa")
@@ -125,11 +126,20 @@ od_lisbon_jittered = odjitter::jitter(  #jitter
   disaggregation_threshold = 100 ##30? 50? 100?
 )
 nrow(od_lisbon_jittered) # 9042 (17784 with 100 disagreg_thr)
-
 ```
+
+```{r}
+counters = readxl::read_excel("DadosAbertos_IST_CML_ContagensCiclistas_20172021.xlsx", sheet = "Maio2017")
+counters_sf = counters %>% 
+  sf::st_as_sf(coords = c("lon", "lat"))
+```
+
+
 ```{r jitteredoverview, echo=FALSE, fig.cap="\\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)", fig.show='hold', fig.ncol=2, out.width="50%"}
 plot(od_lisbon_sf$geometry, lwd = 0.2)
+plot(counters_sf, col = "red", add = TRUE)
 plot(od_lisbon_jittered$geometry, lwd = 0.1)
+plot(counters_sf, col = "red", add = TRUE)
 ```
 
 Although useful for visualising the complex and spatially diffuse reality of travel patterns, we found that the most valuable use of jittering is as a pre-processing stage before routing and route network generation.
