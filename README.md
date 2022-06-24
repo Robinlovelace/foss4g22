@@ -113,13 +113,12 @@ This approach has been implemented efficiently in the Rust crate
 
 # Results
 
-We have found that jittering leads to more spatially diffuse
-representations of OD datasets than the common approach to desire lines
-that go from and to zone centroids. We have used the approach to add
-value to numerous OD datasets for projects based in Ireland, Norway,
-Portugal, New Zealand and beyond. For instance, Fig. shows the
-difference between desire lines with centroids approach and the
-jittering approach.
+Jittering leads to more spatially diffuse representations of OD datasets
+than the common approach to desire lines that go from and to zone
+centroids. We have used the approach to add value to numerous OD
+datasets for projects based in Ireland, Norway, Portugal, New Zealand
+and beyond. Figure @ref(fig:lisbon1) shows the difference between desire
+lines with centroids approach and the jittering approach.
 
 <img src="README_files/figure-gfm/jitteredoverview-1.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" width="50%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/jitteredoverview-2.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" width="50%" style="display: block; margin: auto;" />
 
@@ -127,7 +126,7 @@ Although useful for visualising the complex and spatially diffuse
 reality of travel patterns, we found that the most valuable use of
 jittering is as a pre-processing stage before routing and route network
 generation. Route networks generated from jittered desire lines are more
-diffuse, and potentially more realistic, that centroid-based desire
+diffuse, and potentially more realistic, than centroid-based desire
 lines.
 
 We also found that the approach, implemented in Rust and with bindings
@@ -137,8 +136,16 @@ major city in less than a minute on consumer hardware.
 
 We also found that the results of jittering depend on the geographic
 input datasets representing start points and trip attractors, and the
-use of weights. This highlights the importance of exploring the
-parameter space for optimal jittered desire line creation.
+use of weights.
+
+| Jittering parameters        | Routing parameters | Nrow | R-Squared |
+|:----------------------------|:-------------------|-----:|----------:|
+| Unjittered                  | quietest           |  574 |      0.23 |
+| Unjittered                  | balanced           |  574 |      0.22 |
+| Unjittered                  | fastest            |  574 |      0.10 |
+| Jittered, no disaggregation | quietest           |  574 |      0.26 |
+| Jittered, no disaggregation | balanced           |  574 |      0.11 |
+| Jittered, no disaggregation | fastest            |  574 |      0.00 |
 
 # Next steps
 

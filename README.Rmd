@@ -15,7 +15,9 @@ editor_options:
 unzip("ISPRSguidelines_authors_fullpaper_latex_2021_09_09.zip")
 tinytex::pdflatex("ISPRSguidelines_authors_fullpaper.tex")
 rmarkdown::render("README.Rmd")
-browseURL("README.pdf")
+file.rename("README.pdf", "foss4g-paper-jittering.pdf")
+browseURL("foss4g-paper-jittering.pdf")
+piggyback::pb_upload("foss4g-paper-jittering.pdf")
 ```
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -37,8 +39,9 @@ knitr::opts_chunk$set(
 # devtools::install_github("itsleeds/od")
 library(sf)
 library(tmap)
-library(dplyr)
+library(tidyverse)
 library(stplanr)
+library(cyclestreets)
 # rbbt::bbt_update_bib(path_rmd = "README.Rmd", path_bib = "foss4g2022.bib")
 ```
 
@@ -46,8 +49,7 @@ library(stplanr)
 
 Origin-destination (OD) datasets provide information on aggregate travel patterns between zones and geographic entities.
 OD datasets are 'implicitly geographic', containing identification codes of the geographic objects from which trips start and end.
-A common approach to converting OD datasets to geographic entities, for example represented using the simple features standard [@ogcopengeospatialconsortiuminc_opengis_2011] and saved in file formats such as GeoPackage and GeoJSON, is to represent each OD record as a straight line between zone centroids.
-This approach to representing OD datasets on the map has been since at least the 1950s [@boyce_forecasting_2015] and is still in use today [e.g. @rae_spatial_2009].
+A common approach to converting OD datasets to geographic entities, for example represented using the simple features standard [@ogcopengeospatialconsortiuminc_opengis_2011] and saved in file formats such as GeoPackage and GeoJSON, is to represent each OD record as a straight line between zone centroids. This approach to representing OD datasets on the map has been since at least the 1950s [@boyce_forecasting_2015] and is still in use today [e.g. @rae_spatial_2009].
 
 Beyond simply visualising aggregate travel patterns, centroid-based geographic desire lines are also used as the basis of many transport modelling processes.
 The following steps can be used to convert OD datasets into route networks, in a process that can generate nationally scalable results [@morgan_travel_2020]:
@@ -59,7 +61,7 @@ The following steps can be used to convert OD datasets into route networks, in a
 -   Aggregation of routes into route networks, with values on each segment representing the total amount of travel ('flow') on that part of the network, using functions such as `overline()` in the open source R package `stplanr` [@lovelace_stplanr_2018]
 
 This approach is tried and tested.
-The OD -> desire line -> route -> route network processing pipeline forms the basis of the route network results in the Propensity to Cycle Tool, an open source and publicly available map-based web application for informing strategic cycle network investment, 'visioning' and prioritisation [@lovelace_propensity_2017; @goodman_scenarios_2019].
+The OD -\> desire line -\> route -\> route network processing pipeline forms the basis of the route network results in the Propensity to Cycle Tool, an open source and publicly available map-based web application for informing strategic cycle network investment, 'visioning' and prioritisation [@lovelace_propensity_2017; @goodman_scenarios_2019].
 However, the approach has some key limitations:
 
 -   Flows are concentrated on transport network segments leading to zone centroids, creating distortions in the results and preventing the simulation of the diffuse networks that are particularly important for walking and cycling
@@ -100,7 +102,7 @@ This approach has been implemented efficiently in the Rust crate `odjitter`, the
 
 Jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
 We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond.
-Figure \@ref(fig:lisbon1) shows the difference between desire lines with centroids approach and the jittering approach. 
+Figure \@ref(fig:lisbon1) shows the difference between desire lines with centroids approach and the jittering approach.
 
 ```{r lisbon1, include=FALSE, cache=TRUE, fig.cap="Illustration of jittered (left) compared with unjittered (right) origin-destination data."}
 od_all = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/TRIPSmode_freguesias.Rds"))
@@ -108,32 +110,41 @@ zones = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/F
 osm_data_region = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/osm_data_region.Rds"))
 ```
 
-
 ```{r include=FALSE, cache=TRUE}
 ## For Lisbon only 
 lisbon_zones = zones %>% filter(Concelho == "Lisboa")
 od_lisbon = od_all %>% 
   filter(DICOFREor11 %in% lisbon_zones$Dicofre & DICOFREde11 %in% lisbon_zones$Dicofre)
-
-od_lisbon_sf = od::od_to_sf(od_lisbon, lisbon_zones) #desire lines
+od_lisbon_with_bikes = od_lisbon %>% filter(Bike > 0)
+od_lisbon_sf = od::od_to_sf(od_lisbon_with_bikes, lisbon_zones) #desire lines
 
 set.seed(42)
 od_lisbon_jittered = odjitter::jitter(  #jitter
-  od = od_lisbon,
+  od = od_lisbon_with_bikes,
   zones = lisbon_zones,
   subpoints = osm_data_region,
   disaggregation_key = "Total",
-  disaggregation_threshold = 100 ##30? 50? 100?
+  disaggregation_threshold = round(max(od_lisbon_with_bikes$Total) + 1) ##30? 50? 100?
 )
-nrow(od_lisbon_jittered) # 9042 (17784 with 100 disagreg_thr)
+od_lisbon_jittered_500 = odjitter::jitter(  #jitter
+  od = od_lisbon_with_bikes,
+  zones = lisbon_zones,
+  subpoints = osm_data_region,
+  disaggregation_key = "Total",
+  disaggregation_threshold = 500 ##30? 50? 100?
+)
+# nrow(od_lisbon_jittered) # 9042 (17784 with 100 disagreg_thr)
 ```
 
 ```{r}
-counters = readxl::read_excel("DadosAbertos_IST_CML_ContagensCiclistas_20172021.xlsx", sheet = "Maio2017")
+counters = readxl::read_excel("DadosAbertos_IST_CML_ContagensCiclistas_20172021.xlsx", sheet = "Out2021")
 counters_sf = counters %>% 
-  sf::st_as_sf(coords = c("lon", "lat"))
+  filter(TurnoNor %in% c("M1", "M2", "T1", "T2")) %>% 
+  group_by(Ponto) %>% 
+  summarise(SumCiclistas = sum(SumCiclistas, na.rm = TRUE), lon = mean(lon), lat = mean(lat)) %>% 
+  select(-Ponto) %>% 
+  sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
 ```
-
 
 ```{r jitteredoverview, echo=FALSE, fig.cap="\\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)", fig.show='hold', fig.ncol=2, out.width="50%"}
 plot(od_lisbon_sf$geometry, lwd = 0.2)
@@ -142,18 +153,93 @@ plot(od_lisbon_jittered$geometry, lwd = 0.1)
 plot(counters_sf, col = "red", add = TRUE)
 ```
 
+```{r, eval=FALSE, echo=FALSE}
+# Routing unjittered:
+routes_unjittered_quietest = route(l = od_lisbon_sf , route_fun = journey, plan = "quietest")
+write_rds(routes_unjittered_quietest, "routes_unjittered_quietest.Rds")
+routes_unjittered_balanced = route(l = od_lisbon_sf , route_fun = journey, plan = "balanced")
+write_rds(routes_unjittered_balanced, "routes_unjittered_balanced.Rds")
+routes_unjittered_fastest = route(l = od_lisbon_sf , route_fun = journey, plan = "fastest")
+write_rds(routes_unjittered_fastest, "routes_unjittered_fastest.Rds")
+# Routing unjittered:
+routes_jittered_quietest = route(l = od_lisbon_jittered , route_fun = journey, plan = "quietest")
+write_rds(routes_jittered_quietest, "routes_jittered_quietest.Rds")
+routes_jittered_balanced = route(l = od_lisbon_jittered , route_fun = journey, plan = "balanced")
+write_rds(routes_jittered_balanced, "routes_jittered_balanced.Rds")
+routes_jittered_fastest = route(l = od_lisbon_jittered , route_fun = journey, plan = "fastest")
+write_rds(routes_jittered_fastest, "routes_jittered_fastest.Rds")
+
+```
+
+```{r}
+routes_unjittered_quietest = readRDS("routes_unjittered_quietest.Rds")
+routes_unjittered_balanced = readRDS("routes_unjittered_balanced.Rds")
+routes_unjittered_fastest = readRDS("routes_unjittered_fastest.Rds")
+routes_jittered_quietest = readRDS("routes_jittered_quietest.Rds")
+routes_jittered_balanced = readRDS("routes_jittered_balanced.Rds")
+routes_jittered_fastest = readRDS("routes_jittered_fastest.Rds")
+rnet_unjittered_quietest = overline(routes_unjittered_quietest, attrib = "Bike")
+rnet_unjittered_balanced = overline(routes_unjittered_balanced, attrib = "Bike")
+rnet_unjittered_fastest = overline(routes_unjittered_fastest, attrib = "Bike")
+rnet_jittered_quietest = overline(routes_jittered_quietest, attrib = "Bike")
+rnet_jittered_balanced = overline(routes_jittered_balanced, attrib = "Bike")
+rnet_jittered_fastest = overline(routes_jittered_fastest, attrib = "Bike")
+```
+
+```{r, echo=FALSE}
+# rnet_quiet = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/rnet_enmac_region_quietest_top_20000.Rds"))
+
+counters_sf_joined = st_join(counters_sf,
+                             rnet_unjittered_quietest %>% rename(Bikes_unjittered_quietest = Bike),
+                             join = sf::st_nearest_feature)
+counters_sf_joined = st_join(counters_sf_joined,
+                             rnet_unjittered_balanced %>% rename(Bikes_unjittered_balanced = Bike),
+                             join = sf::st_nearest_feature)
+counters_sf_joined = st_join(counters_sf_joined,
+                             rnet_unjittered_fastest %>% rename(Bikes_unjittered_fastest = Bike),
+                             join = sf::st_nearest_feature)
+counters_sf_joined = st_join(counters_sf_joined,
+                             rnet_jittered_quietest %>% rename(Bikes_jittered_quietest = Bike),
+                             join = sf::st_nearest_feature)
+counters_sf_joined = st_join(counters_sf_joined,
+                             rnet_jittered_balanced %>% rename(Bikes_jittered_balanced = Bike),
+                             join = sf::st_nearest_feature)
+counters_sf_joined = st_join(counters_sf_joined,
+                             rnet_jittered_fastest %>% rename(Bikes_jittered_fastest = Bike),
+                             join = sf::st_nearest_feature)
+# # head(counters_sf_joined)
+# corrplot::corrplot(counters_sf_joined %>% sf::st_drop_geometry())
+# counters_sf_joined %>% 
+#   sf::st_drop_geometry() %>% 
+#   plot()
+```
+
 Although useful for visualising the complex and spatially diffuse reality of travel patterns, we found that the most valuable use of jittering is as a pre-processing stage before routing and route network generation.
-Route networks generated from jittered desire lines are more diffuse, and potentially more realistic, that centroid-based desire lines.
+Route networks generated from jittered desire lines are more diffuse, and potentially more realistic, than centroid-based desire lines.
 
 We also found that the approach, implemented in Rust and with bindings to R and Python (in progress), is fast.
 Benchmarks show that the approach can 'jitter' desire lines representing millions of trips in a major city in less than a minute on consumer hardware.
 
 We also found that the results of jittering depend on the geographic input datasets representing start points and trip attractors, and the use of weights.
-This highlights the importance of exploring the parameter space for optimal jittered desire line creation.
 
-# Next steps
+```{r}
+results = tibble::tribble(
+  ~`Jittering`, ~`Routing`, ~`Nrow`, ~`R-Squared`,
+  "Unjittered", "quietest", nrow(od_lisbon_sf), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_unjittered_quietest),
+  "Unjittered", "balanced", nrow(od_lisbon_sf), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_unjittered_balanced),
+  "Unjittered", "fastest", nrow(od_lisbon_sf), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_unjittered_fastest),
+  "Jittered, no disaggregation", "quietest", nrow(od_lisbon_jittered), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_quietest),
+  "Jittered, no disaggregation", "balanced", nrow(od_lisbon_jittered), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_balanced),
+  "Jittered, no disaggregation", "fastest", nrow(od_lisbon_jittered), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_fastest),
+  )
+knitr::kable(results, digits = 2, booktabs = TRUE, caption = "Results showing counter/model fit for route networks generated from different routing and jittering parameters")
+```
 
-We plan to create/improve R/Python interfaces to the `odjitter` and enable others to benefit from it.
-<!-- Although an R interface to the `odjitter` crate has already been developed, it uses system calls, not bindings provided by the R package `rextendr`. --> We plan to improve the package's documentation and to test its results, supporting reproducible sustainable transport research worldwide.
+# Conclusion
+
+Building on previous work , we have explored the relative importance of parameters that 'jitter' and disaggregate OD data to create more spatially diverse geographic represenations of travel between zone *and* the routing settings used.
+We found that the combination of careful selection of routing profiles, in addition to careful and iteratively selected jittering parameters is needed for realistic route network results, based on a case study of Lisbon, Portugal.
+We cannot draw conclusions about the optimal settings for accurate route network generation in other cities because each route network and set of cycling preferences is different.
+Future work should seek to test a wider range of jittering parameters in multiple case study areas with larger ground truth datasets.
 
 # References

@@ -8,3 +8,4 @@ ISPRSguidelines_authors*
 *.log
 *.gz
 *.xlsx
+*.Rds
