@@ -203,6 +203,202 @@ write_rds(routes_jittered_500_fastest, "routes_jittered_500_fastest.Rds")
 
 ```
 
+
+```{r eval=FALSE, include=FALSE}
+#routes with r5r
+options(java.parameters = '-Xmx8G') #memory max 8GB
+options(java.home="C:/Program Files/Java/jdk-11.0.11/")
+library(r5r)
+library(stplanr)
+
+r5r_lts = setup_r5(data_path = "D:/GIS/TML/biclar/r5r/") #includes osm from june 2022
+
+#jittered routes with r5r, selection of LTS 2 and 4
+
+od_lisbon_jittered_500_points = line2df(od_lisbon_jittered_500)
+od_lisbon_jittered_500_OR = od_lisbon_jittered_500_points[,c(1,2,3)]
+names(od_lisbon_jittered_500_OR) = c("id", "lon", "lat")
+od_lisbon_jittered_500_DE = od_lisbon_jittered_500_points[,c(1,4,5)]
+names(od_lisbon_jittered_500_DE) = c("id", "lon", "lat")
+
+od_lisbon_jittered_500_r5r = od_lisbon_jittered_500
+od_lisbon_jittered_500_r5r$id = 1:nrow(od_lisbon_jittered_500_r5r)
+
+routes_jittered_500_lts1 = detailed_itineraries(
+  r5r_lts,
+  origins = od_lisbon_jittered_500_OR,
+  destinations = od_lisbon_jittered_500_DE,
+  mode = "BICYCLE",
+  # mode_egress = "WALK",
+  # departure_datetime = Sys.time(),
+  # time_window = 1L,
+  # suboptimal_minutes = 0L,
+  fare_structure = NULL,
+  max_fare = Inf,
+  max_walk_time = Inf,
+  max_bike_time = Inf,
+  max_trip_duration = 180L, #in minutes
+  # walk_speed = 3.6,
+  bike_speed = 12,
+  # max_rides = 3,
+  max_lts = 1, #1 - quietest, 4 - hardcore
+  shortest_path = TRUE, #FALSE?
+  all_to_all = FALSE,
+  n_threads = Inf,
+  verbose = FALSE,
+  progress = TRUE,
+  drop_geometry = FALSE,
+  output_dir = NULL
+)
+routes_jittered_500_lts1 = routes_jittered_500_lts1 %>% mutate(id = as.integer(from_id)) %>%
+  select(id, total_duration, total_distance, route) %>%
+  left_join(od_lisbon_jittered_500_r5r %>% st_drop_geometry(), by="id")
+write_rds(routes_jittered_500_lts1, "routes_jittered_500_lts1.Rds")
+
+routes_jittered_500_lts2 = detailed_itineraries(
+  r5r_lts,
+  origins = od_lisbon_jittered_500_OR,
+  destinations = od_lisbon_jittered_500_DE,
+  mode = "BICYCLE",
+  fare_structure = NULL,
+  max_fare = Inf,
+  max_walk_time = Inf,
+  max_bike_time = Inf,
+  max_trip_duration = 180L, #in minutes
+  bike_speed = 12,
+  max_lts = 2, #1 - quietest, 4 - hardcore
+  shortest_path = TRUE, #FALSE?
+  all_to_all = FALSE,
+  n_threads = Inf,
+  verbose = FALSE,
+  progress = TRUE,
+  drop_geometry = FALSE,
+  output_dir = NULL
+)
+routes_jittered_500_lts2 = routes_jittered_500_lts2 %>% mutate(id = as.integer(from_id)) %>%
+  select(id, total_duration, total_distance, route) %>%
+  left_join(od_lisbon_jittered_500_r5r %>% st_drop_geometry(), by="id")
+write_rds(routes_jittered_500_lts2, "routes_jittered_500_lts2.Rds")
+
+routes_jittered_500_lts3 = detailed_itineraries(
+  r5r_lts,
+  origins = od_lisbon_jittered_500_OR,
+  destinations = od_lisbon_jittered_500_DE,
+  mode = "BICYCLE",
+  fare_structure = NULL,
+  max_fare = Inf,
+  max_walk_time = Inf,
+  max_bike_time = Inf,
+  max_trip_duration = 180L, #in minutes
+  bike_speed = 12,
+  max_lts = 3, #1 - quietest, 4 - hardcore
+  shortest_path = TRUE, #FALSE?
+  all_to_all = FALSE,
+  n_threads = Inf,
+  verbose = FALSE,
+  progress = TRUE,
+  drop_geometry = FALSE,
+  output_dir = NULL
+)
+routes_jittered_500_lts3 = routes_jittered_500_lts3 %>% mutate(id = as.integer(from_id)) %>%
+  select(id, total_duration, total_distance, route) %>%
+  left_join(od_lisbon_jittered_500_r5r %>% st_drop_geometry(), by="id")
+write_rds(routes_jittered_500_lts3, "routes_jittered_500_lts3.Rds")
+
+routes_jittered_500_lts4 = detailed_itineraries(
+  r5r_lts,
+  origins = od_lisbon_jittered_500_OR,
+  destinations = od_lisbon_jittered_500_DE,
+  mode = "BICYCLE",
+  fare_structure = NULL,
+  max_fare = Inf,
+  max_walk_time = Inf,
+  max_bike_time = Inf,
+  max_trip_duration = 180L, #in minutes
+  bike_speed = 12,
+  max_lts = 4, #1 - quietest, 4 - hardcore
+  shortest_path = TRUE, #FALSE?
+  all_to_all = FALSE,
+  n_threads = Inf,
+  verbose = FALSE,
+  progress = TRUE,
+  drop_geometry = FALSE,
+  output_dir = NULL
+)
+routes_jittered_500_lts4 = routes_jittered_500_lts4 %>% mutate(id = as.integer(from_id)) %>%
+  select(id, total_duration, total_distance, route) %>%
+  left_join(od_lisbon_jittered_500_r5r %>% st_drop_geometry(), by="id")
+write_rds(routes_jittered_500_lts4, "routes_jittered_500_lts4.Rds")
+
+
+
+# unjittered routes with r5r, selection of LTS 2 and 4
+
+od_lisbon_unjittered_points = line2df(od_lisbon_with_bikes)
+od_lisbon_unjittered_OR = od_lisbon_unjittered_points[,c(1,2,3)]
+names(od_lisbon_unjittered_OR) = c("id", "lon", "lat")
+od_lisbon_unjittered_DE = od_lisbon_unjittered_points[,c(1,4,5)]
+names(od_lisbon_unjittered_DE) = c("id", "lon", "lat")
+
+od_lisbon_unjittered_r5r = od_lisbon_with_bikes
+od_lisbon_unjittered_r5r$id = 1:nrow(od_lisbon_unjittered_r5r)
+
+routes_unjittered_lts2 = detailed_itineraries(
+  r5r_lts,
+  origins = od_lisbon_unjittered_OR,
+  destinations = od_lisbon_unjittered_DE,
+  mode = "BICYCLE",
+  fare_structure = NULL,
+  max_fare = Inf,
+  max_walk_time = Inf,
+  max_bike_time = Inf,
+  max_trip_duration = 180L, #in minutes
+  bike_speed = 12,
+  max_lts = 2, #1 - quietest, 4 - hardcore
+  shortest_path = TRUE, #FALSE?
+  all_to_all = FALSE,
+  n_threads = Inf,
+  verbose = FALSE,
+  progress = TRUE,
+  drop_geometry = FALSE,
+  output_dir = NULL
+)
+routes_unjittered_lts2 = routes_unjittered_lts2 %>% mutate(id = as.integer(from_id)) %>%
+  select(id, total_duration, total_distance, route) %>%
+  left_join(od_lisbon_unjittered_r5r %>% st_drop_geometry(), by="id")
+write_rds(routes_unjittered_lts2, "routes_unjittered_lts2.Rds")
+
+
+routes_unjittered_lts4 = detailed_itineraries(
+  r5r_lts,
+  origins = od_lisbon_unjittered_OR,
+  destinations = od_lisbon_unjittered_DE,
+  mode = "BICYCLE",
+  fare_structure = NULL,
+  max_fare = Inf,
+  max_walk_time = Inf,
+  max_bike_time = Inf,
+  max_trip_duration = 180L, #in minutes
+  bike_speed = 12,
+  max_lts = 4, #1 - quietest, 4 - hardcore
+  shortest_path = TRUE, #FALSE?
+  all_to_all = FALSE,
+  n_threads = Inf,
+  verbose = FALSE,
+  progress = TRUE,
+  drop_geometry = FALSE,
+  output_dir = NULL
+)
+routes_unjittered_lts4 = routes_unjittered_lts4 %>% mutate(id = as.integer(from_id)) %>%
+  select(id, total_duration, total_distance, route) %>%
+  left_join(od_lisbon_unjittered_r5r %>% st_drop_geometry(), by="id")
+write_rds(routes_unjittered_lts4, "routes_unjittered_lts4.Rds")
+
+
+```
+
+
+
 ```{r}
 routes_unjittered_quietest = readRDS("routes_unjittered_quietest.Rds")
 routes_unjittered_balanced = readRDS("routes_unjittered_balanced.Rds")
@@ -213,6 +409,10 @@ routes_jittered_fastest = readRDS("routes_jittered_fastest.Rds")
 routes_jittered_500_quietest = readRDS("routes_jittered_500_quietest.Rds")
 routes_jittered_500_balanced = readRDS("routes_jittered_500_balanced.Rds")
 routes_jittered_500_fastest = readRDS("routes_jittered_500_fastest.Rds")
+routes_jittered_500_lts2 = readRDS("routes_jittered_500_lts2.Rds")
+routes_jittered_500_lts4 = readRDS("routes_jittered_500_lts4.Rds")
+routes_unjittered_lts2 = readRDS("routes_unjittered_lts2.Rds")
+routes_unjittered_lts4 = readRDS("routes_unjittered_lts4.Rds")
 rnet_unjittered_quietest = overline(routes_unjittered_quietest, attrib = "Bike")
 rnet_unjittered_balanced = overline(routes_unjittered_balanced, attrib = "Bike")
 rnet_unjittered_fastest = overline(routes_unjittered_fastest, attrib = "Bike")
@@ -222,6 +422,11 @@ rnet_jittered_fastest = overline(routes_jittered_fastest, attrib = "Bike")
 rnet_jittered_500_quietest = overline(routes_jittered_500_quietest, attrib = "Bike")
 rnet_jittered_500_balanced = overline(routes_jittered_500_balanced, attrib = "Bike")
 rnet_jittered_500_fastest = overline(routes_jittered_500_fastest, attrib = "Bike")
+rnet_jittered_500_lts2 = overline(routes_jittered_500_lts2, attrib = "Bike")
+rnet_jittered_500_lts4 = overline(routes_jittered_500_lts4, attrib = "Bike")
+rnet_unjittered_lts2 = overline(routes_unjittered_lts2, attrib = "Bike")
+rnet_unjittered_lts4 = overline(routes_unjittered_lts4, attrib = "Bike")
+
 ```
 
 ```{r, echo=FALSE}
@@ -261,13 +466,66 @@ counters_sf_joined = st_join(counters_sf_joined,
 #   plot()
 ```
 
-Figure 2 shoes and example of route network from jittered od.... and the counters.
+Figure 2 shows and example of route network from unjittered OD pairs, and jittered OD pairs with disagregation level of 500 trips, for routing option "quietest", and the counters.
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(tmap)
-tmap_mode("View")
+library(biclar)
+tmap_mode("view")
+pal = cols4all::c4a(palette = "mako", n = length(breaks) - 1)
+
+
+# tm_shape(od_lisbon_jittered_500) +
+#   tmap::tm_lines(
+#     id = NULL,
+#     lwd = "Bike",
+#     scale = 15,
+#     col = "Bike",
+#     palette = cols4all::c4a(palette = "mako")
+#   )+
+#   tm_shape(counters_sf) + tm_bubbles(
+#     size = "SumCiclistas",
+#     alpha = 0,
+#     border.col = "red",
+#     col = NA,
+#     border.lwd = 1.5
+#   )
+
 
 #map with route network and couters location. rnet lwd = Bikes
+
+tm_shape(rnet_unjittered_quietest) +
+  tmap::tm_lines(
+    id = NULL,
+    lwd = "Bike",
+    scale = 15,
+    col = "Bike",
+    palette = cols4all::c4a(palette = "mako")
+  ) +
+  tm_shape(counters_sf) + tm_bubbles(
+    size = "SumCiclistas",
+    alpha = 0,
+    border.col = "red",
+    col = NA,
+    border.lwd = 1.5
+  )
+
+tm_shape(rnet_jittered_500_quietest) +
+  tmap::tm_lines(
+    id = NULL,
+    lwd = "Bike",
+    scale = 15,
+    col = "Bike",
+    palette = cols4all::c4a(palette = "mako")
+  )+
+  tm_shape(counters_sf) + tm_bubbles(
+    size = "SumCiclistas",
+    alpha = 0,
+    border.col = "red",
+    col = NA,
+    border.lwd = 1.5
+  )
 
 ```
 
