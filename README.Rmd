@@ -503,7 +503,7 @@ counters_sf_joined = st_join(counters_sf_joined,
                              rnet_unjittered_lts4 %>% rename(Bikes_unjittered_lts4 = Bike),
                              join = sf::st_nearest_feature)
 counters_sf_joined = st_join(counters_sf_joined,
-                             rnet_jittered_500_google %>% rename(Bikes_unjittered_500_google = Bike),
+                             rnet_jittered_500_google %>% rename(Bikes_jittered_500_google = Bike),
                              join = sf::st_nearest_feature)
 # # head(counters_sf_joined)
 # corrplot::corrplot(counters_sf_joined %>% sf::st_drop_geometry())

@@ -111,16 +111,47 @@ This approach has been implemented efficiently in the Rust crate
 `odjitter`, the source code of which can be found at
 <https://github.com/dabreegster/odjitter>.
 
+## Case study
+
+Lisbon, Portugal, is a city with about half million residents. By 2018,
+when a mobility survey was carried on, and only about 0.5% of trips were
+made by bicycle. However, the investments in cycling infrastructure,
+reaching 150 km of cycling network in 2021, and the implementation of a
+dock-based bike-sharing system had a major impact on cycling levels
+(Félix, Cambra, and Moura 2020)
+
+Cyclists’ counts are performed yearly from 2017 to 2021 at 45 locations
+in Lisbon during morning and afternoon peak hours (8-10 am and 5-7 pm).
+In 2021, these were carried out in October. The 67 locations, shown in
+Figure 1, are chosen considering to the existent and planned cycling
+infrastructure, and places where there was no cycling infrastructure,
+but had already some presence of cyclists.
+
+We use data from this mobility survey (Instituto National de Estatística
+2018) at district level (Lisbon has 24 districts) to compare with the …
+Routes are computed using *Cyclestreets*, which relies on 2022 road
+network from OpenStreetMap.
+
 # Results
 
 Jittering leads to more spatially diffuse representations of OD datasets
 than the common approach to desire lines that go from and to zone
 centroids. We have used the approach to add value to numerous OD
 datasets for projects based in Ireland, Norway, Portugal, New Zealand
-and beyond. Figure @ref(fig:lisbon1) shows the difference between desire
-lines with centroids approach and the jittering approach.
+and beyond.
 
-<img src="README_files/figure-gfm/jitteredoverview-1.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" width="50%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/jitteredoverview-2.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering, for Lisbon (Portugal)" width="50%" style="display: block; margin: auto;" />
+In this particular case, Biclar project… validadion of the used method.
+
+Figure @ref(fig:lisbon1) shows the difference between desire lines with
+centroids approach and the jittering approach.
+
+<img src="README_files/figure-gfm/jitteredoverview-1.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" width="100%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/jitteredoverview-2.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" width="100%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/jitteredoverview-3.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" width="100%" style="display: block; margin: auto;" />
+
+Figure 2 shows and example of route network from unjittered OD pairs,
+and jittered OD pairs with disagregation level of 500 trips, for routing
+option “quietest”, and the counters.
+
+<img src="README_files/figure-gfm/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/unnamed-chunk-10-2.png" width="100%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/unnamed-chunk-10-3.png" width="100%" style="display: block; margin: auto;" />
 
 Although useful for visualising the complex and spatially diffuse
 reality of travel patterns, we found that the most valuable use of
@@ -138,22 +169,45 @@ We also found that the results of jittering depend on the geographic
 input datasets representing start points and trip attractors, and the
 use of weights.
 
-| Jittering parameters        | Routing parameters | Nrow | R-Squared |
-|:----------------------------|:-------------------|-----:|----------:|
-| Unjittered                  | quietest           |  574 |      0.23 |
-| Unjittered                  | balanced           |  574 |      0.22 |
-| Unjittered                  | fastest            |  574 |      0.10 |
-| Jittered, no disaggregation | quietest           |  574 |      0.26 |
-| Jittered, no disaggregation | balanced           |  574 |      0.11 |
-| Jittered, no disaggregation | fastest            |  574 |      0.00 |
+Table 1 shows the counter data vs modeled route network fit, with
+different routing and jittering parameters. We can observe that jittered
+OD pairs provide a better fit result, with disagregation. It is also
+noticed that “Balanced” routing option has
 
-# Next steps
+| Jittering                    | Routing  | Nrow | R-Squared |
+|:-----------------------------|:---------|-----:|----------:|
+| Unjittered                   | quietest |  122 |      0.23 |
+| Unjittered                   | balanced |  122 |      0.22 |
+| Unjittered                   | fastest  |  122 |      0.10 |
+| Unjittered                   | LTS2     |  122 |      0.35 |
+| Unjittered                   | LTS4     |  122 |      0.04 |
+| Jittered, no disaggregation  | quietest |  122 |      0.26 |
+| Jittered, no disaggregation  | balanced |  122 |      0.11 |
+| Jittered, no disaggregation  | fastest  |  122 |      0.00 |
+| Jittered, 500 disaggregation | quietest |  799 |      0.50 |
+| Jittered, 500 disaggregation | balanced |  799 |      0.42 |
+| Jittered, 500 disaggregation | fastest  |  799 |      0.08 |
+| Jittered, 500 disaggregation | LTS2     |  799 |      0.54 |
+| Jittered, 500 disaggregation | LTS4     |  799 |      0.14 |
+| Jittered, 500 disaggregation | Google   |  799 |      0.25 |
 
-We plan to create/improve R/Python interfaces to the `odjitter` and
-enable others to benefit from it.
-<!-- Although an R interface to the `odjitter` crate has already been developed, it uses system calls, not bindings provided by the R package `rextendr`. -->
-We plan to improve the package’s documentation and to test its results,
-supporting reproducible sustainable transport research worldwide.
+Results showing counter/model fit for route networks generated from
+different routing and jittering parameters
+
+# Conclusion
+
+Building on previous work , we have explored the relative importance of
+parameters that ‘jitter’ and disaggregate OD data to create more
+spatially diverse geographic representations of travel between zone
+*and* the routing settings used. We found that the combination of
+careful selection of routing profiles, in addition to careful and
+iteratively selected jittering parameters is needed for realistic route
+network results, based on a case study of Lisbon, Portugal. We cannot
+draw conclusions about the optimal settings for accurate route network
+generation in other cities because each route network and set of cycling
+preferences is different. Future work should seek to test a wider range
+of jittering parameters in multiple case study areas with larger ground
+truth datasets.
 
 # References
 
@@ -166,6 +220,15 @@ Travel: Past, Present and Future*. Edward Elgar Publishing.
 
 </div>
 
+<div id="ref-felix2020build" class="csl-entry">
+
+Félix, R., P. Cambra, and F. Moura. 2020. “Build It and Give ‘Em Bikes,
+and They Will Come: The Effects of Cycling Infrastructure and
+Bike-Sharing System in Lisbon.” *Case Studies on Transport Policy*.
+<https://doi.org/10.1016/j.cstp.2020.03.002>.
+
+</div>
+
 <div id="ref-goodman_scenarios_2019" class="csl-entry">
 
 Goodman, Anna, Ilan Fridman Rojas, James Woodcock, Rachel Aldred,
@@ -174,6 +237,14 @@ Nikolai Berkoff, Malcolm Morgan, Ali Abbas, and Robin Lovelace. 2019.
 Carbon Impacts: Application of the ‘Propensity to Cycle Tool’.” *Journal
 of Transport & Health* 12 (March): 263–78.
 <https://doi.org/10.1016/j.jth.2019.01.008>.
+
+</div>
+
+<div id="ref-IMOB" class="csl-entry">
+
+Instituto National de Estatística. 2018. “Mobilidade e Funcionalidade Do
+Território Nas Áreas Metropolitanas Do Porto e de Lisboa: 2017.” Lisboa.
+<https://www.ine.pt/xportal/xmain?xpid=INE&xpgid=ine_publicacoes&PUBLICACOESpub_boui=349495406&PUBLICACOESmodo=2&xlang=pt>.
 
 </div>
 
