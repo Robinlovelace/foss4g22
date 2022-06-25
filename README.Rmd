@@ -201,6 +201,8 @@ write_rds(routes_jittered_500_balanced, "routes_jittered_500_balanced.Rds")
 routes_jittered_500_fastest = route(l = od_lisbon_jittered_500 , route_fun = journey, plan = "fastest")
 write_rds(routes_jittered_500_fastest, "routes_jittered_500_fastest.Rds")
 
+routes_jittered_500_google = route(l = od_lisbon_jittered_500 , route_fun = stplanr::route_google, mode = "bicycling")
+write_rds(routes_jittered_500_google, "routes_jittered_500_google.Rds")
 ```
 
 
