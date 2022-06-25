@@ -2,10 +2,10 @@
 title: "Jittering: a flexible approach for converting OD data into geographic desire lines, routes and route networks for transport planning"
 bibliography: foss4g2022.bib
 author: Robin Lovelace, Rosa Félix, Dustin Carlino
-# output: github_document
-output:
-  bookdown::pdf_document2:
-    template: ISPRStemplate.tex
+output: github_document
+# output:
+#   bookdown::pdf_document2:
+#     template: ISPRStemplate.tex
 editor_options: 
   markdown: 
     wrap: sentence
@@ -439,6 +439,7 @@ routes_jittered_500_lts2 = readRDS("routes_jittered_500_lts2.Rds")
 routes_jittered_500_lts4 = readRDS("routes_jittered_500_lts4.Rds")
 routes_unjittered_lts2 = readRDS("routes_unjittered_lts2.Rds")
 routes_unjittered_lts4 = readRDS("routes_unjittered_lts4.Rds")
+routes_unjittered_lts4 = readRDS("routes_unjittered_google.Rds")
 rnet_unjittered_quietest = overline(routes_unjittered_quietest, attrib = "Bike")
 rnet_unjittered_balanced = overline(routes_unjittered_balanced, attrib = "Bike")
 rnet_unjittered_fastest = overline(routes_unjittered_fastest, attrib = "Bike")
@@ -448,7 +449,6 @@ rnet_jittered_fastest = overline(routes_jittered_fastest, attrib = "Bike")
 rnet_jittered_500_quietest = overline(routes_jittered_500_quietest, attrib = "Bike")
 rnet_jittered_500_balanced = overline(routes_jittered_500_balanced, attrib = "Bike")
 rnet_jittered_500_fastest = overline(routes_jittered_500_fastest, attrib = "Bike")
-rnet_jittered_500_google = overline(routes_jittered_500_google, attrib = "Bike")
 routes_jittered_500_lts2 = sf::st_as_sf(
   as.data.frame(sf::st_drop_geometry(routes_jittered_500_lts2)),
   geometry = routes_jittered_500_lts2$geometry
@@ -457,7 +457,7 @@ rnet_jittered_500_lts2 = overline(routes_jittered_500_lts2, attrib = "Bike")
 rnet_jittered_500_lts4 = overline(routes_jittered_500_lts4, attrib = "Bike")
 rnet_unjittered_lts2 = overline(routes_unjittered_lts2, attrib = "Bike")
 rnet_unjittered_lts4 = overline(routes_unjittered_lts4, attrib = "Bike")
-
+rnet_jittered_500_google = overline(routes_jittered_500_google, attrib = "Bike")
 ```
 
 ```{r, echo=FALSE}
@@ -501,6 +501,9 @@ counters_sf_joined = st_join(counters_sf_joined,
                              join = sf::st_nearest_feature)
 counters_sf_joined = st_join(counters_sf_joined,
                              rnet_unjittered_lts4 %>% rename(Bikes_unjittered_lts4 = Bike),
+                             join = sf::st_nearest_feature)
+counters_sf_joined = st_join(counters_sf_joined,
+                             rnet_unjittered_google %>% rename(Bikes_unjittered_google = Bike),
                              join = sf::st_nearest_feature)
 # # head(counters_sf_joined)
 # corrplot::corrplot(counters_sf_joined %>% sf::st_drop_geometry())
@@ -614,6 +617,7 @@ results = tibble::tribble(
   "Jittered, 500 disaggregation", "fastest", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_fastest),
   "Jittered, 500 disaggregation", "LTS2", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_lts2),
   "Jittered, 500 disaggregation", "LTS4", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_lts4),
+  "Jittered, 500 disaggregation", "Google", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_google),
   )
 knitr::kable(results, digits = 2, booktabs = TRUE, caption = "Results showing counter/model fit for route networks generated from different routing and jittering parameters")
 ```
