@@ -439,7 +439,7 @@ routes_jittered_500_lts2 = readRDS("routes_jittered_500_lts2.Rds")
 routes_jittered_500_lts4 = readRDS("routes_jittered_500_lts4.Rds")
 routes_unjittered_lts2 = readRDS("routes_unjittered_lts2.Rds")
 routes_unjittered_lts4 = readRDS("routes_unjittered_lts4.Rds")
-routes_unjittered_lts4 = readRDS("routes_unjittered_google.Rds")
+routes_jittered_500_google = readRDS("routes_jittered_500_google.Rds")
 rnet_unjittered_quietest = overline(routes_unjittered_quietest, attrib = "Bike")
 rnet_unjittered_balanced = overline(routes_unjittered_balanced, attrib = "Bike")
 rnet_unjittered_fastest = overline(routes_unjittered_fastest, attrib = "Bike")
@@ -503,7 +503,7 @@ counters_sf_joined = st_join(counters_sf_joined,
                              rnet_unjittered_lts4 %>% rename(Bikes_unjittered_lts4 = Bike),
                              join = sf::st_nearest_feature)
 counters_sf_joined = st_join(counters_sf_joined,
-                             rnet_unjittered_google %>% rename(Bikes_unjittered_google = Bike),
+                             rnet_jittered_500_google %>% rename(Bikes_unjittered_500_google = Bike),
                              join = sf::st_nearest_feature)
 # # head(counters_sf_joined)
 # corrplot::corrplot(counters_sf_joined %>% sf::st_drop_geometry())
