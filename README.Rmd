@@ -422,6 +422,10 @@ rnet_jittered_fastest = overline(routes_jittered_fastest, attrib = "Bike")
 rnet_jittered_500_quietest = overline(routes_jittered_500_quietest, attrib = "Bike")
 rnet_jittered_500_balanced = overline(routes_jittered_500_balanced, attrib = "Bike")
 rnet_jittered_500_fastest = overline(routes_jittered_500_fastest, attrib = "Bike")
+routes_jittered_500_lts2 = sf::st_as_sf(
+  as.data.frame(sf::st_drop_geometry(routes_jittered_500_lts2)),
+  geometry = routes_jittered_500_lts2$geometry
+)
 rnet_jittered_500_lts2 = overline(routes_jittered_500_lts2, attrib = "Bike")
 rnet_jittered_500_lts4 = overline(routes_jittered_500_lts4, attrib = "Bike")
 rnet_unjittered_lts2 = overline(routes_unjittered_lts2, attrib = "Bike")
