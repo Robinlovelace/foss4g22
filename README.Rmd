@@ -115,6 +115,9 @@ Routes are computed using _Cyclestreets_, which relies on 2022 road network from
 
 Jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
 We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond.
+
+In this particular case, Biclar project... validadion of the used method.
+
 Figure \@ref(fig:lisbon1) shows the difference between desire lines with centroids approach and the jittering approach.
 
 ```{r lisbon1, include=FALSE, cache=TRUE, fig.cap="Illustration of jittered (left) compared with unjittered (right) origin-destination data."}
@@ -258,6 +261,18 @@ counters_sf_joined = st_join(counters_sf_joined,
 #   plot()
 ```
 
+Figure 2 shoes and example of route network from jittered od.... and the counters.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tmap)
+tmap_mode("View")
+
+#map with route network and couters location. rnet lwd = Bikes
+
+```
+
+
+
 Although useful for visualising the complex and spatially diffuse reality of travel patterns, we found that the most valuable use of jittering is as a pre-processing stage before routing and route network generation.
 Route networks generated from jittered desire lines are more diffuse, and potentially more realistic, than centroid-based desire lines.
 
@@ -286,7 +301,7 @@ knitr::kable(results, digits = 2, booktabs = TRUE, caption = "Results showing co
 
 # Conclusion
 
-Building on previous work , we have explored the relative importance of parameters that 'jitter' and disaggregate OD data to create more spatially diverse geographic represenations of travel between zone *and* the routing settings used.
+Building on previous work , we have explored the relative importance of parameters that 'jitter' and disaggregate OD data to create more spatially diverse geographic representations of travel between zone *and* the routing settings used.
 We found that the combination of careful selection of routing profiles, in addition to careful and iteratively selected jittering parameters is needed for realistic route network results, based on a case study of Lisbon, Portugal.
 We cannot draw conclusions about the optimal settings for accurate route network generation in other cities because each route network and set of cycling preferences is different.
 Future work should seek to test a wider range of jittering parameters in multiple case study areas with larger ground truth datasets.
