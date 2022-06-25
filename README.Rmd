@@ -169,7 +169,7 @@ counters_sf = counters %>%
   sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
 ```
 
-```{r jitteredoverview, echo=FALSE, fig.cap="\\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)", fig.show='hold', fig.ncol=2, out.width="50%"}
+```{r jitteredoverview, echo=FALSE, fig.cap="\\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)", fig.show='hold', fig.ncol=2, out.width="100%"}
 plot(od_lisbon_sf$geometry, lwd = 0.2)
 plot(counters_sf, col = "red", add = TRUE)
 plot(od_lisbon_jittered$geometry, lwd = 0.1)
@@ -253,6 +253,10 @@ routes_jittered_500_lts1 = detailed_itineraries(
 routes_jittered_500_lts1 = routes_jittered_500_lts1 %>% mutate(id = as.integer(from_id)) %>%
   select(id, total_duration, total_distance, route) %>%
   left_join(od_lisbon_jittered_500_r5r %>% st_drop_geometry(), by="id")
+routes_jittered_500_lts1 = sf::st_as_sf(
+  as.data.frame(sf::st_drop_geometry(routes_jittered_500_lts1)),
+  geometry = routes_jittered_500_lts1$geometry
+)
 write_rds(routes_jittered_500_lts1, "routes_jittered_500_lts1.Rds")
 
 routes_jittered_500_lts2 = detailed_itineraries(
@@ -278,6 +282,10 @@ routes_jittered_500_lts2 = detailed_itineraries(
 routes_jittered_500_lts2 = routes_jittered_500_lts2 %>% mutate(id = as.integer(from_id)) %>%
   select(id, total_duration, total_distance, route) %>%
   left_join(od_lisbon_jittered_500_r5r %>% st_drop_geometry(), by="id")
+routes_jittered_500_lts2 = sf::st_as_sf(
+  as.data.frame(sf::st_drop_geometry(routes_jittered_500_lts2)),
+  geometry = routes_jittered_500_lts2$geometry
+)
 write_rds(routes_jittered_500_lts2, "routes_jittered_500_lts2.Rds")
 
 routes_jittered_500_lts3 = detailed_itineraries(
@@ -303,6 +311,10 @@ routes_jittered_500_lts3 = detailed_itineraries(
 routes_jittered_500_lts3 = routes_jittered_500_lts3 %>% mutate(id = as.integer(from_id)) %>%
   select(id, total_duration, total_distance, route) %>%
   left_join(od_lisbon_jittered_500_r5r %>% st_drop_geometry(), by="id")
+routes_jittered_500_lts3 = sf::st_as_sf(
+  as.data.frame(sf::st_drop_geometry(routes_jittered_500_lts3)),
+  geometry = routes_jittered_500_lts3$geometry
+)
 write_rds(routes_jittered_500_lts3, "routes_jittered_500_lts3.Rds")
 
 routes_jittered_500_lts4 = detailed_itineraries(
@@ -328,6 +340,10 @@ routes_jittered_500_lts4 = detailed_itineraries(
 routes_jittered_500_lts4 = routes_jittered_500_lts4 %>% mutate(id = as.integer(from_id)) %>%
   select(id, total_duration, total_distance, route) %>%
   left_join(od_lisbon_jittered_500_r5r %>% st_drop_geometry(), by="id")
+routes_jittered_500_lts4 = sf::st_as_sf(
+  as.data.frame(sf::st_drop_geometry(routes_jittered_500_lts4)),
+  geometry = routes_jittered_500_lts4$geometry
+)
 write_rds(routes_jittered_500_lts4, "routes_jittered_500_lts4.Rds")
 
 
@@ -366,6 +382,10 @@ routes_unjittered_lts2 = detailed_itineraries(
 routes_unjittered_lts2 = routes_unjittered_lts2 %>% mutate(id = as.integer(from_id)) %>%
   select(id, total_duration, total_distance, route) %>%
   left_join(od_lisbon_unjittered_r5r %>% st_drop_geometry(), by="id")
+routes_unjittered_lts2 = sf::st_as_sf(
+  as.data.frame(sf::st_drop_geometry(routes_unjittered_lts2)),
+  geometry = routes_unjittered_lts2$geometry
+)
 write_rds(routes_unjittered_lts2, "routes_unjittered_lts2.Rds")
 
 
@@ -392,6 +412,10 @@ routes_unjittered_lts4 = detailed_itineraries(
 routes_unjittered_lts4 = routes_unjittered_lts4 %>% mutate(id = as.integer(from_id)) %>%
   select(id, total_duration, total_distance, route) %>%
   left_join(od_lisbon_unjittered_r5r %>% st_drop_geometry(), by="id")
+routes_unjittered_lts4 = sf::st_as_sf(
+  as.data.frame(sf::st_drop_geometry(routes_unjittered_lts4)),
+  geometry = routes_unjittered_lts4$geometry
+)
 write_rds(routes_unjittered_lts4, "routes_unjittered_lts4.Rds")
 
 
@@ -422,10 +446,7 @@ rnet_jittered_fastest = overline(routes_jittered_fastest, attrib = "Bike")
 rnet_jittered_500_quietest = overline(routes_jittered_500_quietest, attrib = "Bike")
 rnet_jittered_500_balanced = overline(routes_jittered_500_balanced, attrib = "Bike")
 rnet_jittered_500_fastest = overline(routes_jittered_500_fastest, attrib = "Bike")
-routes_jittered_500_lts2 = sf::st_as_sf(
-  as.data.frame(sf::st_drop_geometry(routes_jittered_500_lts2)),
-  geometry = routes_jittered_500_lts2$geometry
-)
+
 rnet_jittered_500_lts2 = overline(routes_jittered_500_lts2, attrib = "Bike")
 rnet_jittered_500_lts4 = overline(routes_jittered_500_lts4, attrib = "Bike")
 rnet_unjittered_lts2 = overline(routes_unjittered_lts2, attrib = "Bike")
@@ -485,12 +506,10 @@ counters_sf_joined = st_join(counters_sf_joined,
 Figure 2 shows and example of route network from unjittered OD pairs, and jittered OD pairs with disagregation level of 500 trips, for routing option "quietest", and the counters.
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%"}
 library(tmap)
 library(biclar)
 tmap_mode("view")
-pal = cols4all::c4a(palette = "mako", n = length(breaks) - 1)
-
 
 # tm_shape(od_lisbon_jittered_500) +
 #   tmap::tm_lines(
@@ -517,7 +536,7 @@ tm_shape(rnet_unjittered_quietest) +
     lwd = "Bike",
     scale = 15,
     col = "Bike",
-    palette = cols4all::c4a(palette = "mako")
+    palette = cols4all::c4a(palette = "mako") #choose a darker one!
   ) +
   tm_shape(counters_sf) + tm_bubbles(
     size = "SumCiclistas",
@@ -587,8 +606,8 @@ results = tibble::tribble(
   "Jittered, 500 disaggregation", "quietest", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_quietest),
   "Jittered, 500 disaggregation", "balanced", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_balanced),
   "Jittered, 500 disaggregation", "fastest", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_fastest),
-  "Jittered, 500 disaggregation", "LTS2", nrow(od_lisbon_jittered_500_r5r), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_lts2),
-  "Jittered, 500 disaggregation", "LTS4", nrow(od_lisbon_jittered_500_r5r), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_lts4),
+  "Jittered, 500 disaggregation", "LTS2", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_lts2),
+  "Jittered, 500 disaggregation", "LTS4", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_lts4),
   )
 knitr::kable(results, digits = 2, booktabs = TRUE, caption = "Results showing counter/model fit for route networks generated from different routing and jittering parameters")
 ```
