@@ -61,7 +61,7 @@ The following steps can be used to convert OD datasets into route networks, in a
 -   Aggregation of routes into route networks, with values on each segment representing the total amount of travel ('flow') on that part of the network, using functions such as `overline()` in the open source R package `stplanr` [@lovelace_stplanr_2018]
 
 This approach is tried and tested.
-The OD -\> desire line -\> route -\> route network processing pipeline forms the basis of the route network results in the Propensity to Cycle Tool, an open source and publicly available map-based web application for informing strategic cycle network investment, 'visioning' and prioritisation [@lovelace_propensity_2017; @goodman_scenarios_2019].
+The OD $\rightarrow$ desire line $\rightarrow$ route $\rightarrow$ route network processing pipeline forms the basis of the route network results in the Propensity to Cycle Tool, an open source and publicly available map-based web application for informing strategic cycle network investment, 'visioning' and prioritisation [@lovelace_propensity_2017; @goodman_scenarios_2019].
 However, the approach has some key limitations:
 
 -   Flows are concentrated on transport network segments leading to zone centroids, creating distortions in the results and preventing the simulation of the diffuse networks that are particularly important for walking and cycling
@@ -89,6 +89,7 @@ Before describing the approach, some definitions are in order:
 
 # Approach
 
+## Jittering
 Jittering represents a comparatively simple --- compared with 'connector' based methods [@jafari_investigation_2015] --- approach is to OD data preprocessing.
 For each OD pair, the jittering approach consists of the following steps for each OD pair (provided it has required inputs of a disaggregation threshold, a single number greater than one, and sub-points from which origin and destination points are located):
 
@@ -104,26 +105,15 @@ Lisbon, Portugal, is a city with about half million residents. By 2018, when a m
 
 Cyclists’ counts are performed yearly from 2017 to 2021 at 45 locations in Lisbon during morning and
 afternoon peak hours (8-10 am and 5-7 pm). In 2021, these were carried out in October.
-The 67 locations, shown in Figure 1, are chosen considering to the existent and planned
+The 67 locations, shown in Figure \ref{lisbonmap}, are chosen considering to the existent and planned
 cycling infrastructure, and places where there was no cycling infrastructure, but had already some presence
 of cyclists.
-
-We use data from this mobility survey [@IMOB] at district level (Lisbon has 24 districts) to compare with the ... 
-Routes are computed using _Cyclestreets_, which relies on 2022 road network from OpenStreetMap. 
-
-# Results
-
-Jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
-We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond.
-
-In this particular case, Biclar project... validadion of the used method.
-
-Figure \@ref(fig:lisbon1) shows the difference between desire lines with centroids approach and the jittering approach.
 
 ```{r lisbon1, include=FALSE, cache=TRUE, fig.cap="Illustration of jittered (left) compared with unjittered (right) origin-destination data."}
 od_all = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/TRIPSmode_freguesias.Rds"))
 zones = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/FREGUESIASgeo.Rds"))
 osm_data_region = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/osm_data_region.Rds"))
+lisbon_limit = st_read("Lisboa_limite.gpkg") %>% st_transform(4326)
 ```
 
 ```{r include=FALSE, cache=TRUE}
@@ -168,13 +158,47 @@ counters_sf = counters %>%
   select(-Ponto) %>% 
   sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
 ```
+```{r lisbonmap, fig.cap="\\label{lisbonmap}Cycling infrastructure in Lisbon as October 2021 and location of cyclists' counters.", fig.ncol=2, out.width="100%"}
+bikelanes = readRDS("Ciclovias2021out.Rds")
+bikelanes = bikelanes %>% filter(TIPOLOGIA == "Ciclovia segregada") #do not show the sharrow ones with traffic
+plot(lisbon_limit$geom, border="grey60")
+plot(bikelanes, lwd = 0.6, col = "darkgreen", add = TRUE)
+plot(counters_sf, col = "red", add = TRUE)
+```
 
-```{r jitteredoverview, echo=FALSE, fig.cap="\\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)", fig.show='hold', fig.ncol=2, out.width="100%"}
-plot(od_lisbon_sf$geometry, lwd = 0.2)
+## Methods
+
+**describe what we are comparing and which data sources are being used**
+
+We use data from this mobility survey [@IMOB] at district level (Lisbon has 24 districts) to compare with the ... 
+There are `r round(sum(od_lisbon_with_bikes$Bike))` daily trips reported in this survey, represented by 122 desire lines. On the other hand, the cycling count data includes `r as.integer(sum(counters_sf$SumCiclistas))` passings in the total of the 67 locations (one trip may pass at more than one location).
+
+Routes were computed using [_Cyclestreets_](https://cyclestreets.net), which relies on 2022 road network from OpenStreetMap, using [`r5r` engine](https://ipeagit.github.io/r5r/) [@pereira_r5r_2021], and using Google Maps service, for routing comparision. This was an iterative process, an not all options were tested due to the computational requirements.
+Regarding the routing options, CycleStreets provides 3 options of cycling routes: "fastest", "balanced" and "quietest", while r5r uses the Level of Traffic Stress (LTS), ranging from 1 - less bicycle friendly, to 4 - more bicycle friendly [@mekuria2012low]. Google Maps does not provide such profile options for bicycle routing.
+In this research we compared CycleStreets' "quietest" and "fastest" modes, and LTS 2 and 4.
+
+# Results
+
+Jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
+We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond.
+
+Figures \ref{poltlisbon1}, \ref{poltlisbon2} and \ref{poltlisbon3} show the difference between desire lines with centroids approach and the jittering approach, for bike trips in Lisbon.
+
+In this particular case, Biclar project... validadion of the used method.
+
+```{r jitteredoverview1, echo=FALSE, fig.cap="\\label{poltlisbon1}Trips represented with desire lines from centroids of 24 areas. The red circles represent the counters locations.", fig.ncol=2, out.width="100%"}
+plot(lisbon_limit$geom, border="grey60")
+plot(od_lisbon_sf$geometry, lwd = 0.2, add = TRUE)
 plot(counters_sf, col = "red", add = TRUE)
-plot(od_lisbon_jittered$geometry, lwd = 0.1)
+```
+```{r jitteredoverview2, echo=FALSE, fig.cap="\\label{poltlisbon2}Trips represented with jittered desire lines, with no disagregation.", fig.ncol=2, out.width="100%"}
+plot(lisbon_limit$geom, border="grey60")
+plot(od_lisbon_jittered$geometry, lwd = 0.2, add = TRUE)
 plot(counters_sf, col = "red", add = TRUE)
-plot(od_lisbon_jittered_500$geometry, lwd = 0.1)
+```
+```{r jitteredoverview3, echo=FALSE, fig.cap="\\label{poltlisbon3}Trips represented with jittered desire lines, with disagregation of 500 trips.", fig.ncol=2, out.width="100%"}
+plot(lisbon_limit$geom, border="grey60")
+plot(od_lisbon_jittered_500$geometry, lwd = 0.1, add = TRUE)
 plot(counters_sf, col = "red", add = TRUE)
 ```
 
@@ -203,6 +227,11 @@ write_rds(routes_jittered_500_fastest, "routes_jittered_500_fastest.Rds")
 
 routes_jittered_500_google = route(l = od_lisbon_jittered_500 , route_fun = stplanr::route_google, mode = "bicycling")
 write_rds(routes_jittered_500_google, "routes_jittered_500_google.Rds")
+
+#Routind jittered 200:
+routes_jittered_200_quietest = route(l = od_lisbon_jittered_200 , route_fun = journey, plan = "quietest")
+write_rds(routes_jittered_200_quietest, "routes_jittered_200_quietest.Rds")
+
 ```
 
 
@@ -421,6 +450,46 @@ routes_unjittered_lts4 = sf::st_as_sf(
 write_rds(routes_unjittered_lts4, "routes_unjittered_lts4.Rds")
 
 
+#jittered routes with r5r for 200, selection of LTS 2 
+
+od_lisbon_jittered_200_points = line2df(od_lisbon_jittered_200)
+od_lisbon_jittered_200_OR = od_lisbon_jittered_200_points[,c(1,2,3)]
+names(od_lisbon_jittered_200_OR) = c("id", "lon", "lat")
+od_lisbon_jittered_200_DE = od_lisbon_jittered_200_points[,c(1,4,5)]
+names(od_lisbon_jittered_200_DE) = c("id", "lon", "lat")
+
+od_lisbon_jittered_200_r5r = od_lisbon_jittered_200
+od_lisbon_jittered_200_r5r$id = 1:nrow(od_lisbon_jittered_200_r5r)
+
+routes_jittered_200_lts2 = detailed_itineraries(
+  r5r_lts,
+  origins = od_lisbon_jittered_200_OR,
+  destinations = od_lisbon_jittered_200_DE,
+  mode = "BICYCLE",
+  fare_structure = NULL,
+  max_fare = Inf,
+  max_walk_time = Inf,
+  max_bike_time = Inf,
+  max_trip_duration = 180L, #in minutes
+  bike_speed = 12,
+  max_lts = 2, #1 - quietest, 4 - hardcore
+  shortest_path = TRUE, #FALSE?
+  all_to_all = FALSE,
+  n_threads = Inf,
+  verbose = FALSE,
+  progress = TRUE,
+  drop_geometry = FALSE,
+  output_dir = NULL
+)
+routes_jittered_200_lts2 = routes_jittered_200_lts2 %>% mutate(id = as.integer(from_id)) %>%
+  select(id, total_duration, total_distance, route) %>%
+  left_join(od_lisbon_jittered_200_r5r %>% st_drop_geometry(), by="id")
+routes_jittered_200_lts2 = sf::st_as_sf(
+  as.data.frame(sf::st_drop_geometry(routes_jittered_200_lts2)),
+  geometry = routes_jittered_200_lts2$geometry
+)
+write_rds(routes_jittered_200_lts2, "routes_jittered_200_lts2.Rds")
+
 ```
 
 
@@ -440,6 +509,8 @@ routes_jittered_500_lts4 = readRDS("routes_jittered_500_lts4.Rds")
 routes_unjittered_lts2 = readRDS("routes_unjittered_lts2.Rds")
 routes_unjittered_lts4 = readRDS("routes_unjittered_lts4.Rds")
 routes_jittered_500_google = readRDS("routes_jittered_500_google.Rds")
+routes_jittered_200_quietest = readRDS("routes_jittered_200_quietest.Rds")
+routes_jittered_200_lts2 = readRDS("routes_jittered_200_lts2.Rds")
 
 rnet_unjittered_quietest = overline(routes_unjittered_quietest, attrib = "Bike")
 rnet_unjittered_balanced = overline(routes_unjittered_balanced, attrib = "Bike")
@@ -452,11 +523,13 @@ rnet_jittered_fastest = overline(routes_jittered_fastest, attrib = "Bike")
 rnet_jittered_500_quietest = overline(routes_jittered_500_quietest, attrib = "Bike")
 rnet_jittered_500_balanced = overline(routes_jittered_500_balanced, attrib = "Bike")
 rnet_jittered_500_fastest = overline(routes_jittered_500_fastest, attrib = "Bike")
+rnet_jittered_200_quietest = overline(routes_jittered_200_quietest, attrib = "Bike")
 
 rnet_jittered_500_lts2 = overline(routes_jittered_500_lts2, attrib = "Bike")
 rnet_jittered_500_lts4 = overline(routes_jittered_500_lts4, attrib = "Bike")
 rnet_unjittered_lts2 = overline(routes_unjittered_lts2, attrib = "Bike")
 rnet_unjittered_lts4 = overline(routes_unjittered_lts4, attrib = "Bike")
+rnet_jittered_200_lts2 = overline(routes_jittered_200_lts2, attrib = "Bike")
 
 rnet_jittered_500_google = overline(routes_jittered_500_google, attrib = "Bike")
 ```
@@ -506,6 +579,12 @@ counters_sf_joined = st_join(counters_sf_joined,
 counters_sf_joined = st_join(counters_sf_joined,
                              rnet_jittered_500_google %>% rename(Bikes_jittered_500_google = Bike),
                              join = sf::st_nearest_feature)
+counters_sf_joined = st_join(counters_sf_joined,
+                             rnet_jittered_200_quietest %>% rename(Bikes_jittered_200_quietest = Bike),
+                             join = sf::st_nearest_feature)
+counters_sf_joined = st_join(counters_sf_joined,
+                             rnet_jittered_200_lts2 %>% rename(Bikes_jittered_200_lts2 = Bike),
+                             join = sf::st_nearest_feature)
 # # head(counters_sf_joined)
 # corrplot::corrplot(counters_sf_joined %>% sf::st_drop_geometry())
 # counters_sf_joined %>% 
@@ -513,30 +592,11 @@ counters_sf_joined = st_join(counters_sf_joined,
 #   plot()
 ```
 
-Figure \@ref(fig:map1) shows and example of route network from unjittered OD pairs, and jittered OD pairs with disagregation level of 500 trips, for routing option "quietest", and the counters.
+Figures \ref{map1}, \ref{map2}, \ref{map3} and \ref{map4} show examples of route networks from unjittered OD pairs, and jittered OD pairs with disagregation level of 500 trips, for differen routing providers, and the counters location.
 
-
-```{r map1, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%"}
+```{r map1, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%", fig.cap="\\label{map1}Route network from unjittered desire lines, with routes from CycleStreets, in quietest routing option."}
 library(tmap)
 library(biclar)
-# tmap_mode("view")
-
-# tm_shape(od_lisbon_jittered_500) +
-#   tmap::tm_lines(
-#     id = NULL,
-#     lwd = "Bike",
-#     scale = 15,
-#     col = "Bike",
-#     palette = cols4all::c4a(palette = "mako")
-#   )+
-#   tm_shape(counters_sf) + tm_bubbles(
-#     size = "SumCiclistas",
-#     alpha = 0,
-#     border.col = "red",
-#     col = NA,
-#     border.lwd = 1.5
-#   )
-
 
 #map with route network and couters location. rnet lwd = Bikes
 
@@ -555,6 +615,8 @@ tm_shape(rnet_unjittered_quietest) +
     col = NA,
     border.lwd = 1.5
   )
+```
+```{r map2, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%", fig.cap="\\label{map2}Route network from jittered desire lines with disagregation of 500 trips, with routes from CycleStreets, in quietest routing option."}
 
 tm_shape(rnet_jittered_500_quietest) +
   tmap::tm_lines(
@@ -571,6 +633,8 @@ tm_shape(rnet_jittered_500_quietest) +
     col = NA,
     border.lwd = 1.5
   )
+```
+```{r map3, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%", fig.cap="\\label{map3}Route network from jittered desire lines with disagregation of 500 trips, with routes from r5r, level of traffic stress 2 (quiet) routing option."}
 
 tm_shape(rnet_jittered_500_lts2) +
   tmap::tm_lines(
@@ -587,12 +651,50 @@ tm_shape(rnet_jittered_500_lts2) +
     col = NA,
     border.lwd = 1.5
   )
+```
+```{r map4, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%", fig.cap="\\label{map4}Route network from jittered desire lines with disagregation of 500 trips, with routes from Google."}
 
+tm_shape(rnet_jittered_500_google) +
+  tmap::tm_lines(
+    id = NULL,
+    lwd = "Bike",
+    scale = 15,
+    col = "Bike",
+    palette = cols4all::c4a(palette = "mako")
+  )+
+  tm_shape(counters_sf) + tm_bubbles(
+    size = "SumCiclistas",
+    alpha = 0,
+    border.col = "red",
+    col = NA,
+    border.lwd = 1.5
+  )
+```
+```{r map5, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%", fig.cap="\\label{map5}Route network from jittered desire lines with disagregation of 200 trips, with routes from r5r, level of traffic stress 2 (quiet) routing option."}
+
+tm_shape(rnet_jittered_200_lts2) +
+  tmap::tm_lines(
+    id = NULL,
+    lwd = "Bike",
+    scale = 15,
+    col = "Bike",
+    palette = cols4all::c4a(palette = "mako")
+  )+
+  tm_shape(counters_sf) + tm_bubbles(
+    size = "SumCiclistas",
+    alpha = 0,
+    border.col = "red",
+    col = NA,
+    border.lwd = 1.5
+  )
 ```
 
 
+When comparing the route network with unjittered desire lines (Figure \ref{map1}) with the jittered ones (Figures \ref{map2}, \ref{map3} and \ref{map4}), we may find that the route networks from jittered desire lines are more diffuse, and not concentrated in a few routes. For cycling and walking, this bring more realistic routes for this transport modes. Nevertheless, we are aware that routing options "quiet", and LTS 2 (quieter than LTS4), have a higher weight in using the existing cycling network infrastructure, and then the resulting route network can be similar to the cycling network silhouette (see Figure \ref{lisbonmap}). In fact, cyclists tend to opt for a cycling infrastructure when it is available, even if it compromises the directness of their trips [@Broach2012].
 
-Although useful for visualising the complex and spatially diffuse reality of travel patterns, we found that the most valuable use of jittering is as a pre-processing stage before routing and route network generation.
+Regarding the different disagregation levels, a route network build from a jittering disagregation of 200 trips is shown in Figure \ref{map5}, with a more diffuse network. 
+
+Although useful for visualizing the complex and spatially diffuse reality of travel patterns, we found that the most valuable use of jittering is as a pre-processing stage before routing and route network generation.
 Route networks generated from jittered desire lines are more diffuse, and potentially more realistic, than centroid-based desire lines.
 
 We also found that the approach, implemented in Rust and with bindings to R and Python (in progress), is fast.
@@ -600,7 +702,7 @@ Benchmarks show that the approach can 'jitter' desire lines representing million
 
 We also found that the results of jittering depend on the geographic input datasets representing start points and trip attractors, and the use of weights.
 
-Table 1 shows the counter data vs modeled route network fit, with different routing and jittering parameters. We can observe that jittered OD pairs provide a better fit result, with disagregation. It is also noticed that "Balanced" routing option has
+Table \ref{tableresults} shows the counter data vs modeled route network fit, with different routing and jittering parameters. We can observe that jittered OD pairs provide a better fit result, with disagregation. It is also noticed that "Balanced" routing option has...
 
 ```{r}
 results = tibble::tribble(
@@ -619,9 +721,14 @@ results = tibble::tribble(
   "Jittered, 500 disaggregation", "LTS2", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_lts2),
   "Jittered, 500 disaggregation", "LTS4", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_lts4),
   "Jittered, 500 disaggregation", "Google", nrow(od_lisbon_jittered_500), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_500_google),
+  "Jittered, 200 disaggregation", "quietest", nrow(od_lisbon_jittered_200), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_200_quietest),
+  "Jittered, 200 disaggregation", "LTS2", nrow(od_lisbon_jittered_200), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_200_lts2),
   )
-knitr::kable(results, digits = 2, booktabs = TRUE, caption = "Results showing counter/model fit for route networks generated from different routing and jittering parameters")
+knitr::kable(results, digits = 2, booktabs = TRUE, caption = "\\label{tableresults}Results showing counter/model fit for route networks generated from different routing and jittering parameters")
 ```
+
+A higher jittered disagregation level (200 trips) does not bring a better fit against a lower disagregation level of 500 trips. This might be explained but the routing profile used in the routing engines, and the location of the cycling counters - most of them at the existing cycling infrastructure. Although a more diffuse route network is expected in active transportation modes, the available data and computed routes are usually closer to where cycling infrastructure exists. Other data should be used to validate this hypothesis, such as the actual cyclist's routes - for example, bike sharing trips routes, despite their access is not usually guaranteed for research purposed.
+
 
 # Conclusion
 
