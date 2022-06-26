@@ -2,10 +2,10 @@
 title: "Jittering: a flexible approach for converting OD data into geographic desire lines, routes and route networks for transport planning"
 bibliography: foss4g2022.bib
 author: Robin Lovelace, Rosa Félix, Dustin Carlino
-output: github_document
-# output:
-#   bookdown::pdf_document2:
-#     template: ISPRStemplate.tex
+# output: github_document
+output:
+  bookdown::pdf_document2:
+    template: ISPRStemplate.tex
 editor_options: 
   markdown: 
     wrap: sentence
@@ -440,23 +440,24 @@ routes_jittered_500_lts4 = readRDS("routes_jittered_500_lts4.Rds")
 routes_unjittered_lts2 = readRDS("routes_unjittered_lts2.Rds")
 routes_unjittered_lts4 = readRDS("routes_unjittered_lts4.Rds")
 routes_jittered_500_google = readRDS("routes_jittered_500_google.Rds")
+
 rnet_unjittered_quietest = overline(routes_unjittered_quietest, attrib = "Bike")
 rnet_unjittered_balanced = overline(routes_unjittered_balanced, attrib = "Bike")
 rnet_unjittered_fastest = overline(routes_unjittered_fastest, attrib = "Bike")
+
 rnet_jittered_quietest = overline(routes_jittered_quietest, attrib = "Bike")
 rnet_jittered_balanced = overline(routes_jittered_balanced, attrib = "Bike")
 rnet_jittered_fastest = overline(routes_jittered_fastest, attrib = "Bike")
+
 rnet_jittered_500_quietest = overline(routes_jittered_500_quietest, attrib = "Bike")
 rnet_jittered_500_balanced = overline(routes_jittered_500_balanced, attrib = "Bike")
 rnet_jittered_500_fastest = overline(routes_jittered_500_fastest, attrib = "Bike")
-routes_jittered_500_lts2 = sf::st_as_sf(
-  as.data.frame(sf::st_drop_geometry(routes_jittered_500_lts2)),
-  geometry = routes_jittered_500_lts2$geometry
-)
+
 rnet_jittered_500_lts2 = overline(routes_jittered_500_lts2, attrib = "Bike")
 rnet_jittered_500_lts4 = overline(routes_jittered_500_lts4, attrib = "Bike")
 rnet_unjittered_lts2 = overline(routes_unjittered_lts2, attrib = "Bike")
 rnet_unjittered_lts4 = overline(routes_unjittered_lts4, attrib = "Bike")
+
 rnet_jittered_500_google = overline(routes_jittered_500_google, attrib = "Bike")
 ```
 
@@ -512,13 +513,13 @@ counters_sf_joined = st_join(counters_sf_joined,
 #   plot()
 ```
 
-Figure 2 shows and example of route network from unjittered OD pairs, and jittered OD pairs with disagregation level of 500 trips, for routing option "quietest", and the counters.
+Figure \@ref(fig:map1) shows and example of route network from unjittered OD pairs, and jittered OD pairs with disagregation level of 500 trips, for routing option "quietest", and the counters.
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%"}
+```{r map1, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%"}
 library(tmap)
 library(biclar)
-tmap_mode("view")
+# tmap_mode("view")
 
 # tm_shape(od_lisbon_jittered_500) +
 #   tmap::tm_lines(

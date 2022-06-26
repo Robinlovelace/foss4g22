@@ -147,11 +147,11 @@ centroids approach and the jittering approach.
 
 <img src="README_files/figure-gfm/jitteredoverview-1.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" width="100%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/jitteredoverview-2.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" width="100%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/jitteredoverview-3.png" title="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" alt="\label{poltlisbon}Trips represented with desire lines from centroids and with jittering (no disagregation and with disagregation), for Lisbon (Portugal)" width="100%" style="display: block; margin: auto;" />
 
-Figure 2 shows and example of route network from unjittered OD pairs,
-and jittered OD pairs with disagregation level of 500 trips, for routing
-option “quietest”, and the counters.
+Figure @ref(fig:map1) shows and example of route network from unjittered
+OD pairs, and jittered OD pairs with disagregation level of 500 trips,
+for routing option “quietest”, and the counters.
 
-<img src="README_files/figure-gfm/unnamed-chunk-10-1.png" width="100%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/unnamed-chunk-10-2.png" width="100%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/unnamed-chunk-10-3.png" width="100%" style="display: block; margin: auto;" />
+<img src="README_files/figure-gfm/map1-1.png" width="100%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/map1-2.png" width="100%" style="display: block; margin: auto;" /><img src="README_files/figure-gfm/map1-3.png" width="100%" style="display: block; margin: auto;" />
 
 Although useful for visualising the complex and spatially diffuse
 reality of travel patterns, we found that the most valuable use of

@@ -15,7 +15,7 @@
 \usepackage[labelsep=period]{caption}  % added 14-04-2016 Markus Englich - Recommendation by Sebastian Brocks
 \usepackage[british]{babel} 
 \usepackage[hang]{footmisc}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \def\footnotemargin{1em} % added 08-01-2020 Dennis Wittich
 
 %\usepackage[authoryear]{natbib}
@@ -74,34 +74,37 @@ $endif$
 
 \begin{document}
 
-\title{GUIDELINES FOR AUTHORS PREPARING A FULL PAPER TO BE SUBMITTED TO ISPRS EVENTS}
+\title{Jittering: a flexible approach for converting OD data into geographic desire lines, routes and route networks for transport planning}
 \date{}
 
 
 % KAO: Remove extra spacing
 % Anonymous submissions, authors' names should not be visible
-\author{***** (for review, names must be rendered anonymous)}
+\author{R. Lovelace \textsuperscript{1,}\thanks{Corresponding author}, R. Félix \textsuperscript{2}, D. Carlino \textsuperscript{3}}
 
 % KAO: Remove extra newline
 % Anonymous submissions, authors' affiliations should not be visible
-\address{**** (for review, affiliations must be rendered anonymous)}
+\address{\textsuperscript{1} Institute for Transport Studies, University of Leeds, UK - r.lovelace@leeds.ac.uk}
+\address{\textsuperscript{2} CERIS, Instituto Superior Técnico, University of Lisbon, Portugal - rosamfelix@tecnico.ulisboa.pt}
+\address{\textsuperscript{3} Alan Turing Institute, UK - dcarlino@turing.ac.uk}
 
 % If the corresponding author is NOT the final author, always add a % space before the subsequent comma, i.e.
 % first author name\textsuperscript{a,}\thanks{Corresponding author} , % second author name \textsuperscript{b}, etc.
 % thanks to Niclas Borlin 05-05-2016
 
 
-\commission{XX, }{YY} %This field is optional. If filled, XX and YY should be replaced by adequate numbers. See https://www2.isprs.org/commissions/
-\workinggroup{XX/YY} %This field is optional.
+\commission{IV, }{YY} %This field is optional. If filled, XX and YY should be replaced by adequate numbers. See https://www2.isprs.org/commissions/
+\workinggroup{IV/4} %This field is optional.
 \icwg{}   %This field is optional.
 
 % KAO: Use times symbol
 \abstract{
 
 % These guidelines are provided for preparation of \textbf{full papers} submitted to ISPRS events (Congress, Geospatial Week, Symposia, smaller events). If the double-blind review process leads to acceptance, they will be either published in the series of Volumes of The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences or of The ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences.  
+Origin-Destination datasets inform how people travel betewen areas. This is usually represented by connecting two centroids of such areas, and assign that information to a route along the road network. For active travel, this representation is often too generalistic, once that the origins and destinations locations diffusion can bring different representations of a reality, and the route possibilities to travel are broader. This paper uses 'jittering' aproach to a dataset of bike trips in Lisbon, Portugal, and compares the results of a diffuser network with counting cycling data, in order to analize if and which jittering parameters better fits the data, and which routing options are a better estimate of real cycling trips for the case study. The results suggest that a jittered OD dataset with a low level of traffic stress (quieter) better fits the data, establishing a better approach for this mode of transport than the traditional modelling tecnhiques. This results are useful to validate the method and add value to projects with OD cycling datasets based in Ireland, Norway, Portugal, New Zealand and beyond.
 }
 
-\keywords{Manuscripts, Proceedings, ISPRS Archives, ISPRS Annals, Guidelines for Authors, Styleguide.}
+\keywords{Origin-Destination data, Methods, Jittering, Active transport, Road network, Validation.}
 
 \maketitle
 
