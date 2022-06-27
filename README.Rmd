@@ -769,12 +769,12 @@ Although a more diffuse route network is expected in active transportation modes
 The results from our analysis suggest that investment in cycle infrastructure is particularly important in a few key locations where cycling potential is high yet provision is poor.
 These locations are highlighted in Figure \@ref(fig:segments), which was generated using information from three key sources:
 
-- Estimates of cycling potential, generated using the jittering -> routing -> route network methods presented in this paper.
+- Estimates of cycling potential, generated using the jittering $\rightarrow$ routing $\rightarrow$ route network methods presented in this paper.
 - Estimates of quietness of links on the network, computed with the open source cyclestreets R package [@desjardins_correlates_2022].
 - Local knowledge, which was used to visually inspect the resulting networks and identify key 'severance' points in the network [@mindell_chapter_2020].
 
 \begin{figure*}
-  \includegraphics[width=\textwidth,height=12cm]{figures/priority-segments}
+  \includegraphics[width=\textwidth,height=14cm]{figures/priority-segments}
   \caption{Segments on the transport network of Lisbon where investment in new cycling infrastructure should be prioritised according to the route networks generated using methods presented in this paper, alongside local knowledge.}
   \label{fig:segments}
 \end{figure*}
