@@ -728,10 +728,11 @@ results = tibble::tribble(
 knitr::kable(results, digits = 2, booktabs = TRUE, caption = "\\label{tableresults}Results showing counter/model fit for route networks generated from different routing and jittering parameters")
 ```
 
-A higher jittered disagregation level (200 trips) does not bring a better fit against a lower disagregation level of 500 trips. This might be explained but the routing profile used in the routing engines, and the location of the cycling counters - most of them at the existing cycling infrastructure. Although a more diffuse route network is expected in active transportation modes, the available data and computed routes are usually closer to where cycling infrastructure exists. Other data should be used to validate this hypothesis, such as a more diffuse cyclists' counters location, or/and the actual cyclist's routes - for example, bike sharing trips routes, despite their access is not usually guaranteed for research purposed.
+A higher jittered disagregation level (200 trips) does not bring a better fit against a lower disagregation level of 500 trips. This might be explained but the routing profile used in the routing engines, and the location of the cycling counters - most of them at the existing cycling infrastructure.
+Although a more diffuse route network is expected in active transportation modes, the available data and computed routes are usually closer to where cycling infrastructure exists. Other data should be used to validate this hypothesis, such as a more diffuse cyclists' counters location, or/and the actual cyclist's routes - for example, bike sharing trips routes, despite their access is not usually guaranteed for research purposed.
 
 Jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
-We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond, and in this particular case study, we can validate the used of this method, which brings better fit results than the traditional centroid-zone desire line.
+We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond, and in this particular case study, we can validate the used of this method, which brings better fit results than the traditional zone centroid desire lines.
 
 # Conclusion
 
