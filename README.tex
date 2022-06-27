@@ -214,7 +214,20 @@ Origin-destination (OD) datasets provide information on aggregate travel pattern
 OD datasets are often `implicitly geographic', containing identification codes of the geographic objects from which trips start and end.
 Exact coordinates of origins and destinations are provided in this way for good reasons: historically computational resources constrained analysis options, meaning that data reduction (by converting thousands of travel survey responses into a more compact aggregate OD dataset) was important; and privacy considerations prevent the disclosure of exact trip start and end points (Boyce and Williams 2015).
 
-A common approach to converting OD datasets to geographic entities, for example represented using the simple features standard (Open Geospatial Consortium Inc 2011) and saved in file formats such as GeoPackage and GeoJSON, is to represent each OD record as a straight line between zone centroids. This approach to representing OD datasets on the map has been since at least the 1950s (Boyce and Williams 2015) and is still in use today (e.g. Rae 2009).
+A common approach to converting OD datasets to geographic entities, for example represented using the simple features standard (Open Geospatial Consortium Inc 2011) and saved in file formats such as GeoPackage and GeoJSON, is to represent each OD record as a straight line between zone centroids.
+This approach to representing OD datasets on the map has been since at least the 1950s (Boyce and Williams 2015) and --- despite the development of various methods to add value to OD datasets by sampling start and end points and `connectors' withing each zone (Lovelace, Félix, and Carlino 2022), discussed below --- centroid-based geographic representations of OD data are still dominant (Rae 2009; Tennekes and Chen 2021).
+Before explaining the methods, it is worth defining terms:
+
+\begin{itemize}
+\item
+  \textbf{Origins}: locations of trip departure, typically stored as ID codes linking to zones
+\item
+  \textbf{Destinations}: trip destinations, also stored as ID codes linking to zones
+\item
+  \textbf{Attributes}: the number of trips made between each `OD pair' and additional attributes such as route distance between each OD pair
+\item
+  \textbf{Jittering}: The combined process of `splitting' OD pairs representing many trips into multiple `sub OD' pairs (disaggregation) and assigning origins and destinations to multiple unique points within each zone
+\end{itemize}
 
 Beyond simply visualising aggregate travel patterns, centroid-based geographic desire lines are also used as the basis of many transport modelling processes.
 The following steps can be used to convert OD datasets into route networks, in a process that can generate nationally scalable results (Morgan and Lovelace 2020):
@@ -228,8 +241,8 @@ The following steps can be used to convert OD datasets into route networks, in a
   Aggregation of routes into route networks, with values on each segment representing the total amount of travel (`flow') on that part of the network, using functions such as \texttt{overline()} in the open source R package \texttt{stplanr} (Lovelace and Ellison 2018)
 \end{itemize}
 
-This approach is tried and tested.
-The OD \(\rightarrow\) desire line \(\rightarrow\) route \(\rightarrow\) route network processing pipeline forms the basis of the route network results in the Propensity to Cycle Tool, an open source and publicly available map-based web application for informing strategic cycle network investment, `visioning' and prioritisation (Lovelace et al. 2017; Goodman et al. 2019).
+This approach is tried and tested:
+the OD \(\rightarrow\) desire line \(\rightarrow\) route \(\rightarrow\) route network processing pipeline forms the basis of the route network results in the Propensity to Cycle Tool, an open source and publicly available map-based web application for informing strategic cycle network investment, `visioning' and prioritisation (Lovelace et al. 2017; Goodman et al. 2019).
 However, the approach has some key limitations:
 
 \begin{itemize}
@@ -241,25 +254,23 @@ However, the approach has some key limitations:
   The approach is inflexible, providing few options to people who want to use valuable OD datasets in different ways
 \end{itemize}
 
-To overcome these limitations we developed a `jittering' approach to conversion of OD datasets to desire lines that randomly samples points within each zone (Lovelace, Félix, and Carlino 2022).
-While that paper discussed the conceptual development of the approach, it omitted key details on its implementation in open source software.
+To overcome these limitations, methods of `jittering' OD data have been developed (Lovelace, Félix, and Carlino 2022).
+While the results from analysis of route networks generated from jittered OD data in that paper were promising, the input datasets were small and technique was not evaluated with reference to ground truth data.
+This raised the question ``Are the jittered results measurably better when compared with counter datasets on the network?'' (Lovelace, Félix, and Carlino 2022).
 
-In this paper we outline the implementation of jittering and demonstrate how a single Rust crate can provide the basis of implementations in other languages.
-Furthermore, we demonstrate how jittering can be used to create more diffuse and accurate estimates of movement at the level of segments (`flows') on transport network, in reproducible code-driven workflows and with minimal computational overheads compared with the computationally intensive process of route calculation (`routing') or processing large GPS datasets.
-The overall aim is to describe the jittering approach in technical terms and its implementation in open source software.
+This question was partially addressed during a presentation and subsequent proceedings published as part of the GISRUK conference (Lovelace et al. 2022).
+However, the input dataset used for that conference paper was small and overly focussed on Edinburgh.
+Furthermore, only a single routing option was used, raising the question:
+what is the relative importance of geographic OD data pre-processing (jittering) and routing options when preparing route networks to support strategic sustainable transport plans?
+We set out to address this question in this paper.
 
-Before describing the approach, some definitions are in order:
+\hypertarget{software-and-reproducibility}{%
+\subsection{Software and reproducibility}\label{software-and-reproducibility}}
 
-\begin{itemize}
-\item
-  \textbf{Origins}: locations of trip departure, typically stored as ID codes linking to zones
-\item
-  \textbf{Destinations}: trip destinations, also stored as ID codes linking to zones
-\item
-  \textbf{Attributes}: the number of trips made between each `OD pair' and additional attributes such as route distance between each OD pair
-\item
-  \textbf{Jittering}: The combined process of `splitting' OD pairs representing many trips into multiple `sub OD' pairs (disaggregation) and assigning origins and destinations to multiple unique points within each zone
-\end{itemize}
+In this paper present results generated using the \texttt{odjitter} Rust crate.
+We developed an interface to R in the \texttt{odjitter} R package (not on CRAN at the time of writing) that can form the basis of a implementations in other languages that interface with the highly efficient Rust implementation.
+The results presented in this paper are fully reproducible.
+See the paper's GitHub repository at \url{https://github.com/Robinlovelace/foss4g22/} for implementation details and to reproduce the results.
 
 \hypertarget{approach}{%
 \section{Approach}\label{approach}}
@@ -533,6 +544,9 @@ Larsen, Jacob, Zachary Patterson, and Ahmed El-Geneidy. 2013. {``Build It. {But}
 \leavevmode\vadjust pre{\hypertarget{ref-lovelace_stplanr_2018}{}}%
 Lovelace, Robin, and Richard Ellison. 2018. {``Stplanr: {A Package} for {Transport Planning}.''} \emph{The R Journal} 10 (2): 7--23. \url{https://doi.org/10.32614/RJ-2018-053}.
 
+\leavevmode\vadjust pre{\hypertarget{ref-lovelace_assessing_2022}{}}%
+Lovelace, Robin, Rosa Félix, Dustin Carlin, and Roger Beecham. 2022. {``Assessing Methods for Generating Route Networks from Origin-Destionation Data: Jittering, Routing, and Visualisation.''} Presented at the 30th {Annual Geographical Information Science Research UK} ({GISRUK}), {Liverpool, United Kingdom}, March 29. \url{https://doi.org/10.5281/zenodo.6410196}.
+
 \leavevmode\vadjust pre{\hypertarget{ref-lovelace_jittering_2022b}{}}%
 Lovelace, Robin, Rosa Félix, and Dustin Carlino. 2022. {``Jittering: {A Computationally Efficient Method} for {Generating Realistic Route Networks} from {Origin-Destination Data}.''} \emph{Findings}, April, 33873. \url{https://doi.org/10.32866/001c.33873}.
 
@@ -559,6 +573,9 @@ Pereira, Rafael H. M., Marcus Saraiva, Daniel Herszenhut, Carlos Kaue Vieira Bra
 
 \leavevmode\vadjust pre{\hypertarget{ref-rae_spatial_2009}{}}%
 Rae, Alasdair. 2009. {``From Spatial Interaction Data to Spatial Interaction Information? {Geovisualisation} and Spatial Structures of Migration from the 2001 {UK} Census.''} \emph{Computers, Environment and Urban Systems} 33 (3): 161--78. \url{https://doi.org/10.1016/j.compenvurbsys.2009.01.007}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-tennekes_design_2021}{}}%
+Tennekes, Martijn, and Min Chen. 2021. {``Design {Space} of {Origin-Destination Data Visualization}.''} \emph{Computer Graphics Forum} 40 (3): 323--34. \url{https://doi.org/10.1111/cgf.14310}.
 
 \leavevmode\vadjust pre{\hypertarget{ref-waldykowski_sustainable_2022}{}}%
 Wałdykowski, Piotr, Joanna Adamczyk, and Maciej Dorotkiewicz. 2022. {``Sustainable {Urban Transport}---{Why} a {Fast Investment} in a {Complete Cycling Network Is Most Profitable} for a {City}.''} \emph{Sustainability} 14 (1, 1): 119. \url{https://doi.org/10.3390/su14010119}.
