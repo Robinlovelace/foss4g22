@@ -1,5 +1,5 @@
 ---
-title: "Jittering: a flexible approach for converting OD data into geographic desire lines, routes and route networks for transport planning"
+title: "Exploring jittering and routing options for converting OD data into route networks: towards accurate estimates of movement at the street level"
 bibliography: foss4g2022.bib
 author: Robin Lovelace, Rosa Félix, Dustin Carlino
 # output: github_document
