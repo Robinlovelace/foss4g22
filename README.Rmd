@@ -6,6 +6,7 @@ author: Robin Lovelace, Rosa Félix, Dustin Carlino
 output:
   bookdown::pdf_document2:
     template: ISPRStemplate.tex
+    keep_tex: true
 editor_options: 
   markdown: 
     wrap: sentence
@@ -15,11 +16,13 @@ editor_options:
 unzip("ISPRSguidelines_authors_fullpaper_latex_2021_09_09.zip")
 tinytex::pdflatex("ISPRSguidelines_authors_fullpaper.tex")
 rmarkdown::render("README.Rmd")
+
 file.rename("README.pdf", "foss4g-paper-jittering.pdf")
 browseURL("foss4g-paper-jittering.pdf")
 piggyback::pb_upload("foss4g-paper-jittering.pdf")
 system("gh release download 1")
 rbbt::bbt_update_bib(path_rmd = "README.Rmd", path_bib = "foss4g2022.bib")
+file.edit("README.tex")
 ```
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -49,9 +52,9 @@ library(cyclestreets)
 
 # Introduction
 
-Origin-destination (OD) datasets provide information on aggregate travel patterns between zones and geographic entities.
-OD datasets are 'implicitly geographic', containing identification codes of the geographic objects from which trips start and end but, in most cases, not exact coordinates of origins and destinations.
-OD datasets are provided in this way for good reasons: historically computational resources constrained analysis options, meaning that data reduction (by converting thousands of travel survey responses into a more compact aggregate OD dataset) was important; and privacy considerations prevent the disclosure of exact trip start and end points [@boyce_forecasting_2015].
+Origin-destination (OD) datasets provide information on aggregate travel patterns between zones and geographic entities, and can be obtained from a wide range of sources making them one of the most commonly used geographic inputs in applied transport planning [@alexander_validation_2015].
+OD datasets are often 'implicitly geographic', containing identification codes of the geographic objects from which trips start and end.
+Exact coordinates of origins and destinations are provided in this way for good reasons: historically computational resources constrained analysis options, meaning that data reduction (by converting thousands of travel survey responses into a more compact aggregate OD dataset) was important; and privacy considerations prevent the disclosure of exact trip start and end points [@boyce_forecasting_2015].
 
 A common approach to converting OD datasets to geographic entities, for example represented using the simple features standard [@ogcopengeospatialconsortiuminc_opengis_2011] and saved in file formats such as GeoPackage and GeoJSON, is to represent each OD record as a straight line between zone centroids. This approach to representing OD datasets on the map has been since at least the 1950s [@boyce_forecasting_2015] and is still in use today [e.g. @rae_spatial_2009].
 
@@ -113,7 +116,7 @@ The 67 locations, shown in Figure \ref{lisbonmap}, were chosen considering to th
 cycling infrastructure, and places where there was no cycling infrastructure, but had already some presence
 of cyclists.
 
-```{r lisbon1, include=FALSE, cache=TRUE, fig.cap="Illustration of jittered (left) compared with unjittered (right) origin-destination data."}
+```{r lisbon1, include=FALSE, cache=TRUE, fig.cap="Illustration of jittered (left) compared with unjittered (right) origin-destination data.", out.width="100%"}
 od_all = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/TRIPSmode_freguesias.Rds"))
 zones = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/FREGUESIASgeo.Rds"))
 osm_data_region = readRDS(url("https://github.com/U-Shift/biclar/releases/download/0.0.1/osm_data_region.Rds"))
@@ -170,6 +173,15 @@ plot(lisbon_limit$geom, border="grey60")
 plot(bikelanes, lwd = 0.6, col = "darkgreen", add = TRUE)
 plot(counters_sf, col = "red", add = TRUE)
 ```
+
+<!-- \begin{figure*} -->
+
+<!-- {\centering \includegraphics[width=0.6\linewidth]{README_files/figure-latex/lisbonmap-1}  -->
+
+<!-- } -->
+
+<!-- \caption{\label{lisbonmap}Cycling infrastructure in Lisbon as October 2021 and location of cyclists' counters.}\label{fig:lisbonmap} -->
+<!-- \end{figure*} -->
 
 ## Methods
 
