@@ -773,11 +773,16 @@ These locations are highlighted in Figure \@ref(fig:segments), which was generat
 - Estimates of quietness of links on the network, computed with the open source cyclestreets R package [@desjardins_correlates_2022].
 - Local knowledge, which was used to visually inspect the resulting networks and identify key 'severance' points in the network [@mindell_chapter_2020].
 
-\begin{figure*}
-  \includegraphics[width=\textwidth,height=14cm]{figures/priority-segments}
-  \caption{Segments on the transport network of Lisbon where investment in new cycling infrastructure should be prioritised according to the route networks generated using methods presented in this paper, alongside local knowledge.}
-  \label{fig:segments}
-\end{figure*}
+```{r segments, fig.cap="Segments on the transport network of Lisbon where investment in new cycling infrastructure should be prioritised according to the route networks generated using methods presented in this paper, alongside local knowledge.", out.width="100%"}
+knitr::include_graphics("figures/priority-segments.jpeg")
+```
+
+
+<!-- \begin{figure} -->
+<!--   \includegraphics[width=\textwidth]{figures/priority-segments} -->
+<!--   \caption{Segments on the transport network of Lisbon where investment in new cycling infrastructure should be prioritised according to the route networks generated using methods presented in this paper, alongside local knowledge.} -->
+<!--   \label{fig:segments} -->
+<!-- \end{figure} -->
 
 Figure \@ref(fig:segments) highlights the policy relevant nature of this research.
 A key finding is that, combined with local knowledge and detailed data on existing transport infrastructure, which can be used to generate metrics such as Level of Traffic Stress (LTS) [@wang_does_2016] and Cycling Level of Service (CLoS) [@deegan_cycling_2015], route networks generated from jittered, disaggregated, and appropriated routed OD data can help prioritise investment where it is most needed.
@@ -789,19 +794,39 @@ However, the results presented in this section show that careful consideration o
 
 # Conclusion
 
-Building on previous work, we have explored the relative importance of parameters that 'jitter' and disaggregate OD data to create more spatially diverse geographic representations of travel between zone *and* the routing settings used.
-We found that the combination of careful selection of routing profiles, in addition to careful and iteratively selected jittering parameters is needed for realistic route network results, based on a case study of Lisbon, Portugal.
-
-We cannot draw specific and universally applicable conclusions about the optimal settings for accurate route network generation in other cities because each route network and set of cycling preferences is different.
-
-However, the results strongly suggest that 1) careful translation of OD data to geographic start and end locations and disaggregation and 2) careful selection of routing options are needed *in combination* to ensure that route networks derived from OD data are diffuse and accurate.
+Building on previous work [@lovelace_jittering_2022b], we have explored the relative importance of jittering and routing options.
+As with previous work, we found that jittering leads to more spatially diverse geographic representations of travel between zones.
+Because the results were generated only for a single city, and because we did not explore the full parameter space (alternative subpoint weighting parameters in the jittering process are discussed below), we cannot draw specific and universally applicable conclusions about the optimal settings for accurate route network generation in other cities.
+It should be remembered that route networks and cycling preferences vary from city to city [@buehler_bikeway_2016].
+However, although our findings were based on a single case study, Lisbon, Portugal, the findings have implications for future work using OD data to support evidence-based investment in sustainable transport infrastructure [e.g. @vybornova_automated_2022a].
+The overall finding is that both 1) careful translation of OD data to geographic start and end locations and disaggregation and 2) careful selection of routing options are needed *in combination* to ensure that route networks derived from OD data are diffuse and accurate.
 
 Accurate route network representations of transport systems are needed to support investment in a variety of transport interventions [@morgan_travel_2020].
 We have focused in this study on cycleway network because a complete cycle network represents one of the most cost-effective ways to reduce car dependence and associated environmental, economic, social and health costs [@waldykowski_sustainable_2022].
 Cycleway *networks*, rather than simply isolated routes or other geographically sparse interventions, are vital for successful active travel investment [@buehler_bikeway_2016].
 Our results are therefore highly policy relevant, adding value to established methods of adding value to OD data to support sustainable transport planning [@lovelace_propensity_2017; @larsen_build_2013; @mohammed_origindestination_2022].
 
+The research presented in this paper is not without limitations.
+We did not explore the full range of jittering and routing options available due to time and computational resource constraints.
+Specifically, varying the type and weights of origin and destination subpoints, as advocated in @lovelace_jittering_2022b, could lead to improved fit.
+This would require filtering the subpoints used to include only certain types of nodes on the road network (all vertices on the road network were used as the basis for both origin subpoints and destination subpoints in this study, see [documentation](https://github.com/dabreegster/odjitter) in the `odjitter` Rust crate for details).
+Future work could explore the use of including only residential roads, or increasing the weight associated with residential roads, in the origin subpoints, for example.
+Likewise, destination subpoints and associated weights could be altered to prioritise key trip attractors such as schools and commercial centres.
+Another limitation is the simplistic measure of accuracy used in this study.
+Accuracy was inferred from goodness-of-fit between aggregated flow values at 67 counter locations and modeled flow on nearest segment on the network.
+Future work could use alternative measures of fit such as root-mean-square error (RMSE) and more sophisticated ways of comparing observed counter values to modeled networked values, e.g. using inverse distance weighted measures associated with links in close proximity to each counter, with empirically derived bandwidths.
+
+More broadly, the quality of the underlying route network data is imperfect.
+Efforts to improve the underlying OpenStreetMap data will continue to overcome this limitation, not just in Lisbon but worldwide [@barrington-leigh_world_2017].
+This will improve the results over time because all routing engines used in this study, except for Google's routing service, use OSM data.
+Furthermore, alternative data sources and methods could be used to generate more accurate road networks [e.g. @leninisha_water_2015].
 Future work should seek to test a wider range of jittering parameters in multiple case study areas with larger ground truth datasets.
 Other fit measures, such as GEH or SQV statistics, may also be used to compare count data with simulated traffic volumes.
+
+Despite these limitations, and the need for future academic work, the results are already useful.
+Imperfect data-driven evidence is better than no data-driven data, especially when practitioners are aware of the mechanisms underlying route network level estimates of travel behavior such as those presented in this paper.
+A benefit of the approach is that it based on open source software and reproducible code, allowing others to build on the methods [@lovelace_open_2020].
+Indeed, a next step building on directly on the research presented in this paper is to use the results to support strategic cycle network planning in Lisbon and the wider area.
+In parallel to efforts to improve route network representations of transport systems we therefore advocate for the use of the approach presented in this paper, and related methods [e.g. @cooper_predictive_2018; @vybornova_automated_2022a], to be implemented in support of more evidence-based investment in sustainable transport infrastructure at city, regional and national scales worldwide.
 
 # References
