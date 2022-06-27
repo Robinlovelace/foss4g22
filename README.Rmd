@@ -774,7 +774,8 @@ These locations are highlighted in Figure \@ref(fig:segments), which was generat
 - Local knowledge, which was used to visually inspect the resulting networks and identify key 'severance' points in the network [@mindell_chapter_2020].
 
 \begin{figure*}
-  \includegraphics[width=\textwidth,height=12cm]{figures/priority-segments}
+  \includegraphics[width=0.7\textwidth]{figures/priority-segments}
+  \centering 
   \caption{Segments on the transport network of Lisbon where investment in new cycling infrastructure should be prioritised according to the route networks generated using methods presented in this paper, alongside local knowledge.}
   \label{fig:segments}
 \end{figure*}
