@@ -199,9 +199,8 @@ Results were then assessed. Count data was compared with the resulting route net
 
 # Results
 
-Jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
-We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond.
-
+We generated route networks based on a range of different jittering parameters and routing options.
+The results presented in this section not only report estimates of model-counter fit but also provide indication of the type of networks generated, though route network maps.
 Figures \ref{poltlisbon1}, \ref{poltlisbon2} and \ref{poltlisbon3} show the difference between desire lines with centroids approach and the jittering approach, for bike trips in Lisbon.
 
 ```{r jitteredoverview1, echo=FALSE, fig.cap="\\label{poltlisbon1}Trips represented with desire lines from centroids of 24 areas. The red circles represent the counters locations.", fig.ncol=2, out.width="100%"}
