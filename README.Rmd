@@ -2,11 +2,11 @@
 title: "Exploring jittering and routing options for converting origin-destination data into route networks: towards accurate estimates of movement at the street level"
 bibliography: foss4g2022.bib
 author: Robin Lovelace, Rosa Félix, Dustin Carlino
-# output: github_document
-output:
-  bookdown::pdf_document2:
-    template: ISPRStemplate.tex
-    keep_tex: true
+output: github_document
+# output:
+#   bookdown::pdf_document2:
+#     template: ISPRStemplate.tex
+#     keep_tex: true
 editor_options: 
   markdown: 
     wrap: sentence
@@ -51,6 +51,8 @@ library(stplanr)
 library(cyclestreets)
 # rbbt::bbt_update_bib(path_rmd = "README.Rmd", path_bib = "foss4g2022.bib")
 ```
+
+Note: this has been submitted to the academic track of FOSS4G. See https://osf.io/4yxj7/ for the preprint.
 
 # Introduction
 
