@@ -736,7 +736,8 @@ results = tibble::tribble(
   "Jittered, 200 disaggregation", "quietest", nrow(od_lisbon_jittered_200), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_200_quietest),
   "Jittered, 200 disaggregation", "LTS2", nrow(od_lisbon_jittered_200), cor(counters_sf_joined$SumCiclistas, counters_sf_joined$Bikes_jittered_200_lts2),
   )
-knitr::kable(results, digits = 2, booktabs = TRUE, caption = "\\label{tableresults}Results showing counter/model fit for route networks generated from different routing and jittering parameters")
+knitr::kable(results, digits = 2, booktabs = TRUE, caption = "\\label{tableresults}Results showing counter/model fit for route networks generated from different routing and jittering parameters",
+             linesep = c("", "", "","", "\\addlinespace","","", "\\addlinespace","", "", "","","", "\\addlinespace"))
 ```
 
 A higher jittered disagregation level (200 trips) does not bring a better fit against a lower disagregation level of 500 trips. This might be explained but the routing profile used in the routing engines, and the location of the cycling counters - most of them at the existing cycling infrastructure.
