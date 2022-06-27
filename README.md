@@ -434,19 +434,19 @@ traffic volumes.
 
 Despite these limitations, and the need for future academic work, the
 results are already useful. Imperfect data-driven evidence is better
-than no data-driven data, especially when practitioners are aware of the
-mechanisms underlying route network level estimates of travel behavior
-such as those presented in this paper. A benefit of the approach is that
-it based on open source software and reproducible code, allowing others
-to build on the methods (Lovelace et al., 2020). Indeed, a next step
-building on directly on the research presented in this paper is to use
-the results to support strategic cycle network planning in Lisbon and
-the wider area. In parallel to efforts to improve route network
-representations of transport systems we therefore advocate for the use
-of the approach presented in this paper, and related methods (e.g.
-Cooper, 2018; Vybornova et al., 2022), to be implemented in support of
-more evidence-based investment in sustainable transport infrastructure
-at city, regional and national scales worldwide.
+than no systematic evidence, especially when practitioners are aware of
+the mechanisms underlying route network level estimates of travel
+behavior such as those presented in this paper. A benefit of the
+approach is that it based on open source software and reproducible code,
+allowing others to build on the methods (Lovelace et al., 2020). Indeed,
+a next step building on directly on the research presented in this paper
+is to use the results to support strategic cycle network planning in
+Lisbon and the wider area. In parallel to efforts to improve route
+network representations of transport systems we therefore advocate for
+the use of the approach presented in this paper, and related methods
+(e.g. Cooper, 2018; Vybornova et al., 2022), to be implemented in
+support of more evidence-based investment in sustainable transport
+infrastructure at city, regional and national scales worldwide.
 
 We thank Lisbon Municipal Government and Transport Infrastructure
 Ireland for funding this research.
