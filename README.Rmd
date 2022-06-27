@@ -18,6 +18,7 @@ rmarkdown::render("README.Rmd")
 file.rename("README.pdf", "foss4g-paper-jittering.pdf")
 browseURL("foss4g-paper-jittering.pdf")
 piggyback::pb_upload("foss4g-paper-jittering.pdf")
+system("gh release download 1")
 ```
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
