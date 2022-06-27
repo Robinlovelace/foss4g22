@@ -757,6 +757,8 @@ However, the results strongly suggest that 1) careful translation of OD data to 
 
 Accurate route network representations of transport systems are needed to support investment in a variety of transport interventions [@morgan_travel_2020].
 We have focused in this study on cycleway network because a complete cycle network represents one of the most cost-effective ways to reduce car dependence and associated environmental, economic, social and health costs [@waldykowski_sustainable_2022].
+Cycleway *networks*, rather than simply isolated routes or other geographically sparse interventions, are vital for successful active travel investment [@buehler_bikeway_2016].
+Our results are therefore highly policy relevant, adding value to established methods of adding value to OD data to support sustainable transport planning [@lovelace_propensity_2017; @larsen_build_2013; @mohammed_origindestination_2022].
 
 Future work should seek to test a wider range of jittering parameters in multiple case study areas with larger ground truth datasets.
 
