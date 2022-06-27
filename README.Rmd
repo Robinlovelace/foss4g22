@@ -19,6 +19,7 @@ file.rename("README.pdf", "foss4g-paper-jittering.pdf")
 browseURL("foss4g-paper-jittering.pdf")
 piggyback::pb_upload("foss4g-paper-jittering.pdf")
 system("gh release download 1")
+rbbt::bbt_update_bib(path_rmd = "README.Rmd", path_bib = "foss4g2022.bib")
 ```
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -73,7 +74,7 @@ However, the approach has some key limitations:
 
 -   The approach is inflexible, providing few options to people who want to use valuable OD datasets in different ways
 
-To overcome these limitations we developed a 'jittering' approach to conversion of OD datasets to desire lines that randomly samples points within each zone [@Lovelace2022Jittering].
+To overcome these limitations we developed a 'jittering' approach to conversion of OD datasets to desire lines that randomly samples points within each zone [@lovelace_jittering_2022b].
 While that paper discussed the conceptual development of the approach, it omitted key details on its implementation in open source software.
 
 In this paper we outline the implementation of jittering and demonstrate how a single Rust crate can provide the basis of implementations in other languages.
@@ -105,7 +106,7 @@ This approach has been implemented efficiently in the Rust crate `odjitter`, the
 
 ## Case study
 
-Lisbon, Portugal, is a city with about half million residents. By 2018, when a mobility survey was carried on, and only about 0.5% of trips were made by bicycle. However, the investments in cycling infrastructure, reaching 150 km of cycling network in 2021, and the implementation of a dock-based bike-sharing system had a major impact on cycling levels [@felix2020build].
+Lisbon, Portugal, is a city with about half million residents. By 2018, when a mobility survey was carried on, and only about 0.5% of trips were made by bicycle. However, the investments in cycling infrastructure, reaching 150 km of cycling network in 2021, and the implementation of a dock-based bike-sharing system had a major impact on cycling levels [@felix_build_2020a].
 
 Cyclists’ counts are performed yearly from 2017 to 2021 at more than 65 locations in Lisbon during morning and afternoon peak hours (8-10 am and 5-7 pm). In 2021, these were carried out in October.
 The 67 locations, shown in Figure \ref{lisbonmap}, were chosen considering to the existent and planned
