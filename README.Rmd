@@ -93,6 +93,7 @@ Before describing the approach, some definitions are in order:
 # Approach
 
 ## Jittering
+
 Jittering represents a comparatively simple --- compared with 'connector' based methods [@jafari_investigation_2015] --- approach is to OD data preprocessing.
 For each OD pair, the jittering approach consists of the following steps for each OD pair (provided it has required inputs of a disaggregation threshold, a single number greater than one, and sub-points from which origin and destination points are located):
 
@@ -160,6 +161,7 @@ counters_sf = counters %>%
   select(-Ponto) %>% 
   sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
 ```
+
 ```{r lisbonmap, fig.cap="\\label{lisbonmap}Cycling infrastructure in Lisbon as October 2021 and location of cyclists' counters.", fig.ncol=2, out.width="100%"}
 bikelanes = readRDS("Ciclovias2021out.Rds")
 bikelanes = bikelanes %>% filter(TIPOLOGIA == "Ciclovia segregada") #do not show the sharrow ones with traffic
@@ -184,6 +186,9 @@ Results were then assessed. Count data was compared with the resulting route net
 
 # Results
 
+Jittering leads to more spatially diffuse representations of OD datasets than the common approach to desire lines that go from and to zone centroids.
+We have used the approach to add value to numerous OD datasets for projects based in Ireland, Norway, Portugal, New Zealand and beyond.
+
 Figures \ref{poltlisbon1}, \ref{poltlisbon2} and \ref{poltlisbon3} show the difference between desire lines with centroids approach and the jittering approach, for bike trips in Lisbon.
 
 ```{r jitteredoverview1, echo=FALSE, fig.cap="\\label{poltlisbon1}Trips represented with desire lines from centroids of 24 areas. The red circles represent the counters locations.", fig.ncol=2, out.width="100%"}
@@ -191,11 +196,13 @@ plot(lisbon_limit$geom, border="grey60")
 plot(od_lisbon_sf$geometry, lwd = 0.2, add = TRUE)
 plot(counters_sf, col = "red", add = TRUE)
 ```
+
 ```{r jitteredoverview2, echo=FALSE, fig.cap="\\label{poltlisbon2}Trips represented with jittered desire lines, with no disagregation.", fig.ncol=2, out.width="100%"}
 plot(lisbon_limit$geom, border="grey60")
 plot(od_lisbon_jittered$geometry, lwd = 0.2, add = TRUE)
 plot(counters_sf, col = "red", add = TRUE)
 ```
+
 ```{r jitteredoverview3, echo=FALSE, fig.cap="\\label{poltlisbon3}Trips represented with jittered desire lines, with disagregation of 500 trips.", fig.ncol=2, out.width="100%"}
 plot(lisbon_limit$geom, border="grey60")
 plot(od_lisbon_jittered_500$geometry, lwd = 0.1, add = TRUE)
@@ -616,6 +623,7 @@ tm_shape(rnet_unjittered_quietest) +
     border.lwd = 1.5
   )
 ```
+
 ```{r map2, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%", fig.cap="\\label{map2}Route network from jittered desire lines with disagregation of 500 trips, with routes from CycleStreets, in quietest routing option."}
 
 tm_shape(rnet_jittered_500_quietest) +
@@ -634,6 +642,7 @@ tm_shape(rnet_jittered_500_quietest) +
     border.lwd = 1.5
   )
 ```
+
 ```{r map3, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%", fig.cap="\\label{map3}Route network from jittered desire lines with disagregation of 500 trips, with routes from r5r, level of traffic stress 2 (quiet) routing option."}
 
 tm_shape(rnet_jittered_500_lts2) +
@@ -652,6 +661,7 @@ tm_shape(rnet_jittered_500_lts2) +
     border.lwd = 1.5
   )
 ```
+
 ```{r map4, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%", fig.cap="\\label{map4}Route network from jittered desire lines with disagregation of 500 trips, with routes from Google."}
 
 tm_shape(rnet_jittered_500_google) +
@@ -670,6 +680,7 @@ tm_shape(rnet_jittered_500_google) +
     border.lwd = 1.5
   )
 ```
+
 ```{r map5, echo=FALSE, message=FALSE, warning=FALSE, fig.ncol=2, out.width="100%", fig.cap="\\label{map5}Route network from jittered desire lines with disagregation of 200 trips, with routes from r5r, level of traffic stress 2 (quiet) routing option."}
 
 tm_shape(rnet_jittered_200_lts2) +
@@ -736,10 +747,13 @@ We have used the approach to add value to numerous OD datasets for projects base
 
 # Conclusion
 
-Building on previous work, we have explored the relative importance of parameters that 'jitter' and disaggregate OD data to create more spatially diverse geographic representations of travel between zone *and* the routing settings used.
+Building on previous work , we have explored the relative importance of parameters that 'jitter' and disaggregate OD data to create more spatially diverse geographic representations of travel between zone *and* the routing settings used.
 We found that the combination of careful selection of routing profiles, in addition to careful and iteratively selected jittering parameters is needed for realistic route network results, based on a case study of Lisbon, Portugal.
+We cannot draw specific and universally applicable conclusions about the optimal settings for accurate route network generation in other cities because each route network and set of cycling preferences is different.
+However, the results strongly suggest that 1) careful translation of OD data to geographic start and end locations and disaggregation and 2) careful selection of routing options are needed *in combination* to ensure that route networks derived from OD data are diffuse and accurate.
 
-We cannot draw conclusions about the optimal settings for accurate route network generation in other cities because each route network and set of cycling preferences is different.
+Accurate route network representations of transport systems are needed to support investment in a variety of transport interventions [@morgan_travel_2020].
+
 Future work should seek to test a wider range of jittering parameters in multiple case study areas with larger ground truth datasets.
 
 # References
