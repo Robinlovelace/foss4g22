@@ -756,6 +756,7 @@ We cannot draw specific and universally applicable conclusions about the optimal
 However, the results strongly suggest that 1) careful translation of OD data to geographic start and end locations and disaggregation and 2) careful selection of routing options are needed *in combination* to ensure that route networks derived from OD data are diffuse and accurate.
 
 Accurate route network representations of transport systems are needed to support investment in a variety of transport interventions [@morgan_travel_2020].
+We have focused in this study on cycleway network because a complete cycle network represents one of the most cost-effective ways to reduce car dependence and associated environmental, economic, social and health costs [@waldykowski_sustainable_2022].
 
 Future work should seek to test a wider range of jittering parameters in multiple case study areas with larger ground truth datasets.
 
