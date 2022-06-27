@@ -9,3 +9,4 @@ ISPRSguidelines_authors*
 *.gz
 *.xlsx
 *.Rds
+*.gpkg
