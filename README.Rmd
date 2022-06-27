@@ -749,7 +749,9 @@ We have used the approach to add value to numerous OD datasets for projects base
 
 Building on previous work , we have explored the relative importance of parameters that 'jitter' and disaggregate OD data to create more spatially diverse geographic representations of travel between zone *and* the routing settings used.
 We found that the combination of careful selection of routing profiles, in addition to careful and iteratively selected jittering parameters is needed for realistic route network results, based on a case study of Lisbon, Portugal.
+
 We cannot draw specific and universally applicable conclusions about the optimal settings for accurate route network generation in other cities because each route network and set of cycling preferences is different.
+
 However, the results strongly suggest that 1) careful translation of OD data to geographic start and end locations and disaggregation and 2) careful selection of routing options are needed *in combination* to ensure that route networks derived from OD data are diffuse and accurate.
 
 Accurate route network representations of transport systems are needed to support investment in a variety of transport interventions [@morgan_travel_2020].
