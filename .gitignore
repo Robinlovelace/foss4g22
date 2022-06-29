@@ -10,3 +10,6 @@ ISPRSguidelines_authors*
 *.xlsx
 *.Rds
 *.gpkg
+r5r/*
+r5r_m/*
+r5r_paper/*
