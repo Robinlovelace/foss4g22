@@ -263,3 +263,10 @@ results2 = tibble::tribble(
 )
 knitr::kable(results2, digits = 2, booktabs = TRUE, caption = "\\label{tableresults}Results showing counter/model fit for route networks generated from different routing and jittering parameters",
              linesep = c("", "", "","", "\\addlinespace","","", "\\addlinespace","", "", "","","", "\\addlinespace"))
+
+
+
+
+saveRDS(routes2_jittered_500_lts2, "routes2_jittered_500_lts2.Rds")
+saveRDS(routes3_jittered_500_lts2, "routes3_jittered_500_lts2.Rds")
+saveRDS(routes3_jittered_200_lts2, "routes3_jittered_200_lts2.Rds")
