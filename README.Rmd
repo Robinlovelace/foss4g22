@@ -276,7 +276,7 @@ options(java.home="C:/Program Files/Java/jdk-11.0.11/")
 library(r5r)
 library(stplanr)
 
-r5r_lts = setup_r5(data_path = "D:/GIS/TML/biclar/r5r/") #includes osm from june 2022
+r5r_lts = setup_r5(data_path = "r5r_paper/", overwrite = TRUE) #includes osm from june 2022
 
 #jittered routes with r5r, selection of LTS 2 and 4
 
