@@ -6,8 +6,7 @@ Robin Lovelace, Rosa Félix, Dustin Carlino
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-Note: this has been submitted to the academic track of FOSS4G. See
-<https://osf.io/4yxj7/> for the preprint.
+Note: the paper has been published: https://doi.org/10.5194/isprs-archives-XLVIII-4-W1-2022-279-2022
 
 # Introduction
 
